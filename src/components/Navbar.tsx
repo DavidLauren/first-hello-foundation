@@ -2,7 +2,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
+import { usePendingOrdersCount } from '@/hooks/usePendingOrdersCount';
 import { Settings, LogOut, Menu, X, Camera, Shield, User } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useState } from 'react';
 import {
@@ -18,6 +20,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isAdmin } = useUserRole();
+  const { data: pendingOrdersCount = 0 } = usePendingOrdersCount();
   
   // Safely use auth context with error handling
   let user = null;
@@ -91,10 +94,18 @@ const Navbar = () => {
               {user && isAdmin && (
                 <Link 
                   to="/admin"
-                  className="hidden sm:flex items-center px-3 py-2 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-lg hover:scale-105 transition-all duration-200 shadow-md font-medium text-sm"
+                  className="hidden sm:flex items-center px-3 py-2 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-lg hover:scale-105 transition-all duration-200 shadow-md font-medium text-sm relative"
                 >
                   <Shield className="h-4 w-4 mr-2" />
                   Admin
+                  {pendingOrdersCount > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs font-bold rounded-full"
+                    >
+                      {pendingOrdersCount}
+                    </Badge>
+                  )}
                 </Link>
               )}
 
@@ -208,10 +219,18 @@ const Navbar = () => {
                     <Link
                       to="/admin"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center px-4 py-3 rounded-lg text-violet-600 hover:bg-accent transition-colors font-medium text-lg"
+                      className="flex items-center px-4 py-3 rounded-lg text-violet-600 hover:bg-accent transition-colors font-medium text-lg relative"
                     >
                       <Shield className="h-5 w-5 mr-3" />
                       Administration
+                      {pendingOrdersCount > 0 && (
+                        <Badge 
+                          variant="destructive" 
+                          className="ml-auto h-5 w-5 p-0 flex items-center justify-center text-xs font-bold rounded-full"
+                        >
+                          {pendingOrdersCount}
+                        </Badge>
+                      )}
                     </Link>
                   )}
                   
