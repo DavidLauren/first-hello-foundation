@@ -393,8 +393,10 @@ export type Database = {
           created_at: string
           deferred_billing_enabled: boolean
           email: string
+          first_name: string | null
           id: string
           is_vip: boolean
+          last_name: string | null
           phone: string | null
           updated_at: string
           vip_activated_at: string | null
@@ -408,8 +410,10 @@ export type Database = {
           created_at?: string
           deferred_billing_enabled?: boolean
           email: string
+          first_name?: string | null
           id: string
           is_vip?: boolean
+          last_name?: string | null
           phone?: string | null
           updated_at?: string
           vip_activated_at?: string | null
@@ -423,8 +427,10 @@ export type Database = {
           created_at?: string
           deferred_billing_enabled?: boolean
           email?: string
+          first_name?: string | null
           id?: string
           is_vip?: boolean
+          last_name?: string | null
           phone?: string | null
           updated_at?: string
           vip_activated_at?: string | null

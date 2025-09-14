@@ -115,7 +115,7 @@ const Navbar = () => {
                     <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0 hover:ring-2 hover:ring-brand-primary/30 transition-all duration-200">
                       <Avatar className="h-10 w-10 border-2 border-brand-primary/20 hover:border-brand-primary/40 transition-colors">
                         <AvatarFallback className="bg-gradient-button text-white font-semibold text-sm">
-                          {(profile?.contact_name || user.email || 'U').charAt(0).toUpperCase()}
+                          {(profile?.first_name || profile?.contact_name || user.email || 'U').charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                     </Button>
@@ -124,7 +124,10 @@ const Navbar = () => {
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          {profile?.contact_name || 'Utilisateur'}
+                          {profile?.first_name && profile?.last_name 
+                            ? `${profile.first_name} ${profile.last_name}`
+                            : profile?.contact_name || 'Utilisateur'
+                          }
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
                           {user.email}

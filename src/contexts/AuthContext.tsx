@@ -6,6 +6,8 @@ interface Profile {
   id: string;
   company_name?: string;
   contact_name: string;
+  first_name?: string;
+  last_name?: string;
   email: string;
   phone?: string;
   is_vip?: boolean;

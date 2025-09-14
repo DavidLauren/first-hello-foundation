@@ -13,7 +13,8 @@ const ProfileEditor = () => {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    contact_name: profile?.contact_name || '',
+    first_name: profile?.first_name || '',
+    last_name: profile?.last_name || '',
     company_name: profile?.company_name || '',
     phone: profile?.phone || '',
     billing_address: profile?.billing_address || '',
@@ -49,7 +50,8 @@ const ProfileEditor = () => {
 
   const handleCancel = () => {
     setFormData({
-      contact_name: profile?.contact_name || '',
+      first_name: profile?.first_name || '',
+      last_name: profile?.last_name || '',
       company_name: profile?.company_name || '',
       phone: profile?.phone || '',
       billing_address: profile?.billing_address || '',
@@ -80,14 +82,25 @@ const ProfileEditor = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="contact_name">Nom de contact *</Label>
-            <Input
-              id="contact_name"
-              value={formData.contact_name}
-              onChange={(e) => setFormData(prev => ({ ...prev, contact_name: e.target.value }))}
-              placeholder="Votre nom complet"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="first_name">Prénom *</Label>
+              <Input
+                id="first_name"
+                value={formData.first_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
+                placeholder="Votre prénom"
+              />
+            </div>
+            <div>
+              <Label htmlFor="last_name">Nom *</Label>
+              <Input
+                id="last_name"
+                value={formData.last_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
+                placeholder="Votre nom de famille"
+              />
+            </div>
           </div>
 
           <div>
@@ -153,8 +166,13 @@ const ProfileEditor = () => {
         <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
           <User className="h-5 w-5 text-gray-500" />
           <div>
-            <p className="text-sm text-gray-600">Nom de contact</p>
-            <p className="font-medium">{profile?.contact_name || 'Non renseigné'}</p>
+            <p className="text-sm text-gray-600">Nom complet</p>
+            <p className="font-medium">
+              {profile?.first_name && profile?.last_name 
+                ? `${profile.first_name} ${profile.last_name}`
+                : profile?.contact_name || 'Non renseigné'
+              }
+            </p>
           </div>
         </div>
         
