@@ -469,17 +469,18 @@ const OrderManager = () => {
                                 <img 
                                   src={getImagePreviewUrl(file.file_path, 'photo-uploads')} 
                                   alt={file.file_name}
-                                  className="w-12 h-12 object-cover rounded"
+                                  className="w-12 h-12 object-cover rounded border"
                                   onError={(e) => {
-                                    e.currentTarget.style.display = 'none';
-                                    const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
-                                    if (nextSibling) nextSibling.style.display = 'block';
+                                    const target = e.currentTarget;
+                                    target.style.display = 'none';
+                                    const fallback = target.nextElementSibling as HTMLElement;
+                                    if (fallback) fallback.style.display = 'flex';
                                   }}
                                 />
                               ) : null}
-                              <FileImage 
-                                className={`h-12 w-12 text-muted-foreground ${isImage(file.file_name) ? 'hidden' : 'block'}`}
-                              />
+                              <div className={`flex items-center justify-center w-12 h-12 rounded border bg-muted ${isImage(file.file_name) ? 'hidden' : 'flex'}`}>
+                                <FileImage className="h-6 w-6 text-muted-foreground" />
+                              </div>
                               <div className="flex-1">
                                 <p className="text-sm font-medium">{file.file_name}</p>
                                 <p className="text-xs text-muted-foreground">{formatFileSize(file.file_size)}</p>
@@ -565,17 +566,18 @@ const OrderManager = () => {
                                   <img 
                                     src={getImagePreviewUrl(file.file_path, 'final-photos')} 
                                     alt={file.file_name}
-                                    className="w-12 h-12 object-cover rounded"
+                                    className="w-12 h-12 object-cover rounded border"
                                     onError={(e) => {
-                                      e.currentTarget.style.display = 'none';
-                                      const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
-                                      if (nextSibling) nextSibling.style.display = 'block';
+                                      const target = e.currentTarget;
+                                      target.style.display = 'none';
+                                      const fallback = target.nextElementSibling as HTMLElement;
+                                      if (fallback) fallback.style.display = 'flex';
                                     }}
                                   />
                                 ) : null}
-                                <FileImage 
-                                  className={`h-12 w-12 text-green-600 ${isImage(file.file_name) ? 'hidden' : 'block'}`}
-                                />
+                                <div className={`flex items-center justify-center w-12 h-12 rounded border bg-green-100 ${isImage(file.file_name) ? 'hidden' : 'flex'}`}>
+                                  <FileImage className="h-6 w-6 text-green-600" />
+                                </div>
                                 <div className="flex-1">
                                   <p className="text-sm font-medium">{file.file_name}</p>
                                   <p className="text-xs text-muted-foreground">{formatFileSize(file.file_size)}</p>
