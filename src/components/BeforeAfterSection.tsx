@@ -1,0 +1,152 @@
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Wand2, Clock, Award } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useHomepageImages } from "@/hooks/useHomepageImages";
+import beforeExample from "@/assets/before-example.jpg";
+import afterExample from "@/assets/after-example.jpg";
+
+const BeforeAfterSection = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { images, loading } = useHomepageImages();
+  
+  const handleTryPhoto = () => {
+    if (user) {
+      // Scroller vers la section upload
+      const uploadSection = document.querySelector('#upload-section');
+      if (uploadSection) {
+        uploadSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      navigate("/auth?tab=signup");
+    }
+  };
+  
+  const handleSeeExamples = () => {
+    navigate("/examples");
+  };
+  return (
+    <section className="section-spacing bg-background">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16 animate-fade-in-up">
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-gradient">
+            Découvrez la puissance de notre IA
+          </h2>
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Suppression d'objets complexes en quelques minutes avec une précision chirurgicale
+          </p>
+        </div>
+
+        <Card className="card-premium p-10 mb-10 animate-scale-in">
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary"></div>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-12 mb-12">
+              <div className="text-center animate-slide-in-left">
+                <h3 className="text-3xl font-bold mb-6 text-destructive">AVANT</h3>
+                <img 
+                  src={images.before} 
+                  alt="Photo originale avec mobilier" 
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="w-full rounded-xl shadow-elegant cursor-pointer border border-border/20"
+                  onError={(e) => {
+                    e.currentTarget.src = beforeExample;
+                  }}
+                />
+              </div>
+              <div className="text-center animate-slide-in-right">
+                <h3 className="text-3xl font-bold mb-6 text-brand-accent">APRÈS</h3>
+                <img 
+                  src={images.after} 
+                  alt="Photo retouchée sans mobilier" 
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="w-full rounded-xl shadow-elegant cursor-pointer border border-brand-accent/20"
+                  onError={(e) => {
+                    e.currentTarget.src = afterExample;
+                  }}
+                />
+              </div>
+            </div>
+          )}
+          
+          {/* Deuxième paire d'images */}
+          {!loading && (
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+              <div className="text-center">
+                <h3 className="text-2xl font-bold mb-4 text-destructive">AVANT</h3>
+                <img 
+                  src={images.before2} 
+                  alt="Photo originale avec objets à supprimer" 
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="w-full rounded-lg shadow-lg cursor-pointer"
+                  onError={(e) => {
+                    e.currentTarget.src = beforeExample;
+                  }}
+                />
+              </div>
+              <div className="text-center">
+                <h3 className="text-2xl font-bold mb-4 text-brand-accent">APRÈS</h3>
+                <img 
+                  src={images.after2} 
+                  alt="Photo retouchée avec objets supprimés" 
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="w-full rounded-lg shadow-lg cursor-pointer"
+                  onError={(e) => {
+                    e.currentTarget.src = afterExample;
+                  }}
+                />
+              </div>
+            </div>
+          )}
+          
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-10 animate-fade-in">
+            <div className="flex items-center gap-2 sm:gap-3 text-brand-primary font-bold text-sm sm:text-lg bg-brand-primary/5 px-3 sm:px-6 py-2 sm:py-3 rounded-full border border-brand-primary/20">
+              <Wand2 className="h-4 w-4 sm:h-6 sm:w-6 flex-shrink-0" />
+              <span className="whitespace-nowrap">Suppression intelligente</span>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-3 text-brand-primary font-bold text-sm sm:text-lg bg-brand-primary/5 px-3 sm:px-6 py-2 sm:py-3 rounded-full border border-brand-primary/20">
+              <Clock className="h-4 w-4 sm:h-6 sm:w-6 flex-shrink-0" />
+              <span className="whitespace-nowrap">3 minutes chrono</span>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-3 text-brand-primary font-bold text-sm sm:text-lg bg-brand-primary/5 px-3 sm:px-6 py-2 sm:py-3 rounded-full border border-brand-primary/20">
+              <Award className="h-4 w-4 sm:h-6 sm:w-6 flex-shrink-0" />
+              <span className="whitespace-nowrap">Qualité pro</span>
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up">
+            <Button 
+              size="lg" 
+              className="btn-premium text-brand-primary-foreground font-bold text-lg px-10 py-5"
+              onClick={handleTryPhoto}
+            >
+              Essayez avec votre photo
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="border-2 border-brand-primary text-brand-primary hover:bg-brand-primary/10 hover-lift font-bold text-lg px-10 py-5"
+              onClick={handleSeeExamples}
+            >
+              Voir plus d'exemples
+            </Button>
+          </div>
+        </Card>
+      </div>
+    </section>
+  );
+};
+
+export default BeforeAfterSection;
