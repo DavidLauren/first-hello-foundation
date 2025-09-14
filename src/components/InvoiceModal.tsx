@@ -81,7 +81,7 @@ const InvoiceModal = ({ invoice, isOpen, onClose, onDownloadPDF }: InvoiceModalP
             <div>
               <h3 className="font-semibold text-gray-900 mb-2">De :</h3>
               <div className="text-sm text-gray-600">
-                <p className="font-semibold">{companyInfo?.company_name || 'Votre Entreprise'}</p>
+                <p className="font-semibold">{companyInfo?.company_name || 'Configuration requise dans Admin > Infos Entreprise'}</p>
                 {companyInfo?.address && <p>{companyInfo.address}</p>}
                 {companyInfo?.postal_code && companyInfo?.city && (
                   <p>{companyInfo.postal_code} {companyInfo.city}, {companyInfo.country || 'France'}</p>

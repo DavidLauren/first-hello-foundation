@@ -224,7 +224,7 @@ const UserInvoicesViewer = () => {
             <div class="invoice-header">
               <div class="company-info">
                 ${companyInfo ? `
-                  <div class="company-name">${companyInfo.company_name || 'Entreprise'}</div>
+                  <div class="company-name">${companyInfo.company_name || 'Configuration requise dans Admin > Infos Entreprise'}</div>
                   ${companyInfo.address ? `<div>${companyInfo.address}</div>` : ''}
                   ${companyInfo.postal_code && companyInfo.city ? `<div>${companyInfo.postal_code} ${companyInfo.city}</div>` : ''}
                   ${companyInfo.country ? `<div>${companyInfo.country}</div>` : ''}
@@ -234,8 +234,8 @@ const UserInvoicesViewer = () => {
                   ${companyInfo.siret ? `<div>SIRET: ${companyInfo.siret}</div>` : ''}
                   ${companyInfo.vat_number ? `<div>TVA: ${companyInfo.vat_number}</div>` : ''}
                 ` : `
-                  <div class="company-name">Votre Entreprise</div>
-                  <div>Adresse à configurer</div>
+                   <div class="company-name">Configuration requise dans Admin > Infos Entreprise</div>
+                   <div>Veuillez configurer vos informations dans l'administration</div>
                 `}
               </div>
               
