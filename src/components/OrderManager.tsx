@@ -112,6 +112,19 @@ const OrderManager = () => {
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
 
+  const getImagePreviewUrl = (filePath: string, bucket: string) => {
+    const { data } = supabase.storage
+      .from(bucket)
+      .getPublicUrl(filePath);
+    return data.publicUrl;
+  };
+
+  const isImage = (fileName: string) => {
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    return extension && imageExtensions.includes(extension);
+  };
+
   const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
@@ -451,8 +464,23 @@ const OrderManager = () => {
                         <h4 className="font-medium text-sm mb-2">Fichiers originaux :</h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                           {order.order_files.map((file) => (
-                            <div key={file.id} className="flex items-center justify-between p-2 bg-muted/30 rounded">
-                              <div>
+                            <div key={file.id} className="flex items-center gap-3 p-2 bg-muted/30 rounded">
+                              {isImage(file.file_name) ? (
+                                <img 
+                                  src={getImagePreviewUrl(file.file_path, 'photo-uploads')} 
+                                  alt={file.file_name}
+                                  className="w-12 h-12 object-cover rounded"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                    const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                    if (nextSibling) nextSibling.style.display = 'block';
+                                  }}
+                                />
+                              ) : null}
+                              <FileImage 
+                                className={`h-12 w-12 text-muted-foreground ${isImage(file.file_name) ? 'hidden' : 'block'}`}
+                              />
+                              <div className="flex-1">
                                 <p className="text-sm font-medium">{file.file_name}</p>
                                 <p className="text-xs text-muted-foreground">{formatFileSize(file.file_size)}</p>
                               </div>
@@ -497,6 +525,13 @@ const OrderManager = () => {
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                             {stagingFiles.map((file, index) => (
                               <div key={index} className="relative p-2 bg-blue-50 rounded border">
+                                {isImage(file.name) && (
+                                  <img 
+                                    src={URL.createObjectURL(file)} 
+                                    alt={file.name}
+                                    className="w-full h-24 object-cover rounded mb-2"
+                                  />
+                                )}
                                 <div className="flex items-center justify-between">
                                   <div className="flex-1 min-w-0">
                                     <p className="text-xs font-medium truncate">{file.name}</p>
@@ -525,8 +560,23 @@ const OrderManager = () => {
                           </h4>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             {order.delivered_files.map((file) => (
-                              <div key={file.id} className="flex items-center justify-between p-2 bg-green-50 rounded">
-                                <div>
+                              <div key={file.id} className="flex items-center gap-3 p-2 bg-green-50 rounded">
+                                {isImage(file.file_name) ? (
+                                  <img 
+                                    src={getImagePreviewUrl(file.file_path, 'final-photos')} 
+                                    alt={file.file_name}
+                                    className="w-12 h-12 object-cover rounded"
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none';
+                                      const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                                      if (nextSibling) nextSibling.style.display = 'block';
+                                    }}
+                                  />
+                                ) : null}
+                                <FileImage 
+                                  className={`h-12 w-12 text-green-600 ${isImage(file.file_name) ? 'hidden' : 'block'}`}
+                                />
+                                <div className="flex-1">
                                   <p className="text-sm font-medium">{file.file_name}</p>
                                   <p className="text-xs text-muted-foreground">{formatFileSize(file.file_size)}</p>
                                 </div>
