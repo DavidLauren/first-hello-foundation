@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { User, Mail, Building2, Package } from "lucide-react";
+import { User, Mail } from "lucide-react";
 import PromoCodeSection from "@/components/PromoCodeSection";
 import PhotoUploadSection from "@/components/PhotoUploadSection";
 import VipSection from "@/components/VipSection";
@@ -12,7 +12,7 @@ import DeferredBillingCounter from "@/components/DeferredBillingCounter";
 import ReferralSection from "@/components/ReferralSection";
 import UserOrdersViewer from "@/components/UserOrdersViewer";
 import UserInvoicesViewer from "@/components/UserInvoicesViewer";
-import { FileText } from "lucide-react";
+import ProfileEditor from "@/components/ProfileEditor";
 
 const AccountPage = () => {
   const { user, profile } = useAuth();
@@ -70,8 +70,10 @@ const AccountPage = () => {
 
             <TabsContent value="profile" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Informations du compte */}
+                {/* Informations du compte modifiables */}
                 <div className="space-y-6">
+                  <ProfileEditor />
+                  
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -87,26 +89,6 @@ const AccountPage = () => {
                           <p className="font-medium">{user.email}</p>
                         </div>
                       </div>
-                      
-                      {profile?.contact_name && (
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                          <User className="h-5 w-5 text-gray-500" />
-                          <div>
-                            <p className="text-sm text-gray-600">Nom</p>
-                            <p className="font-medium">{profile.contact_name}</p>
-                          </div>
-                        </div>
-                      )}
-                      
-                      {profile?.company_name && (
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                          <Building2 className="h-5 w-5 text-gray-500" />
-                          <div>
-                            <p className="text-sm text-gray-600">Entreprise</p>
-                            <p className="font-medium">{profile.company_name}</p>
-                          </div>
-                        </div>
-                      )}
                       
                       <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                         <User className="h-5 w-5 text-gray-500" />
