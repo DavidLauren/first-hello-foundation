@@ -307,6 +307,7 @@ const UserInvoicesViewer = () => {
 
             <div style="margin-top: 40px; font-size: 12px; color: #666; border-top: 1px solid #eee; padding-top: 20px;">
               <p><strong>Merci pour votre confiance !</strong></p>
+              <p><strong>TVA non applicable, art. 293 B du CGI</strong></p>
               ${companyInfo?.siret ? `<p>SIRET: ${companyInfo.siret}</p>` : ''}
               ${companyInfo?.vat_number ? `<p>N° TVA: ${companyInfo.vat_number}</p>` : ''}
             </div>

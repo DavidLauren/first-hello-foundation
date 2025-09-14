@@ -152,6 +152,7 @@ const InvoiceModal = ({ invoice, isOpen, onClose, onDownloadPDF }: InvoiceModalP
           <div className="text-sm text-gray-600 border-t pt-6">
             <h4 className="font-semibold text-gray-900 mb-2">Conditions de paiement :</h4>
             <p>Paiement à 30 jours. En cas de retard de paiement, des pénalités de retard au taux de 3 fois le taux d'intérêt légal pourront être appliquées.</p>
+            <p className="mt-3 font-medium">TVA non applicable, art. 293 B du CGI</p>
           </div>
         </div>
 
