@@ -11,14 +11,13 @@ import { useEffect, useState } from "react";
 import { Plus, Edit, Trash2, Save, X, Image, Grid, List, Gift, Euro, Users, Package, Archive } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import MediaManager from "@/components/MediaManager";
-import PromoCodeManager from "@/components/PromoCodeManager";
-import PriceManager from "@/components/PriceManager";
+import OptionsManager from "@/components/OptionsManager";
 import ClientManager from "@/components/ClientManager";
 import AdminDeferredBillingSummary from "@/components/AdminDeferredBillingSummary";
 import DeferredInvoicesViewer from "@/components/DeferredInvoicesViewer";
 import ImmediateInvoicesViewer from "@/components/ImmediateInvoicesViewer";
 import CompanyInfoManager from "@/components/CompanyInfoManager";
-import ReferralManager from "@/components/ReferralManager";
+
 import OrderManager from "@/components/OrderManager";
 import HomepageImagesManager from "@/components/HomepageImagesManager";
 import TrashManager from "@/components/TrashManager";
@@ -34,7 +33,7 @@ const AdminPage = () => {
   const { examples, loading: examplesLoading, saveExample, deleteExample, reorderExamples } = useExamples();
   const [editingExample, setEditingExample] = useState<Example | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [activeTab, setActiveTab] = useState<'orders' | 'examples' | 'media' | 'promo' | 'pricing' | 'clients' | 'billing' | 'info-entreprise' | 'referral' | 'homepage' | 'trash'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'examples' | 'media' | 'options' | 'clients' | 'billing' | 'info-entreprise' | 'homepage' | 'trash'>('orders');
   const [billingSubTab, setBillingSubTab] = useState<'overview' | 'invoices' | 'info'>('overview');
 
   useEffect(() => {
@@ -153,25 +152,14 @@ const AdminPage = () => {
               </button>
               <button
                 className={`px-4 py-2 font-medium transition-colors flex items-center gap-2 ${
-                  activeTab === 'promo' 
+                  activeTab === 'options' 
                     ? 'text-brand-primary border-b-2 border-brand-primary' 
                     : 'text-gray-600 hover:text-brand-primary'
                 }`}
-                onClick={() => setActiveTab('promo')}
+                onClick={() => setActiveTab('options')}
               >
                 <Gift className="h-4 w-4" />
-                Codes Promo
-              </button>
-              <button
-                className={`px-4 py-2 font-medium transition-colors flex items-center gap-2 ${
-                  activeTab === 'pricing' 
-                    ? 'text-brand-primary border-b-2 border-brand-primary' 
-                    : 'text-gray-600 hover:text-brand-primary'
-                }`}
-                onClick={() => setActiveTab('pricing')}
-              >
-                <Euro className="h-4 w-4" />
-                Prix
+                Options
               </button>
               <button
                 className={`px-4 py-2 font-medium transition-colors flex items-center gap-2 ${
@@ -205,17 +193,6 @@ const AdminPage = () => {
               >
                 <Users className="h-4 w-4" />
                 Info Entreprise
-              </button>
-              <button
-                className={`px-4 py-2 font-medium transition-colors flex items-center gap-2 ${
-                  activeTab === 'referral' 
-                    ? 'text-brand-primary border-b-2 border-brand-primary' 
-                    : 'text-gray-600 hover:text-brand-primary'
-                }`}
-                onClick={() => setActiveTab('referral')}
-              >
-                <Gift className="h-4 w-4" />
-                Parrainage
               </button>
               <button
                 className={`px-4 py-2 font-medium transition-colors flex items-center gap-2 ${
@@ -266,16 +243,12 @@ const AdminPage = () => {
             </>
           ) : activeTab === 'media' ? (
             <MediaManager />
-          ) : activeTab === 'promo' ? (
-            <PromoCodeManager />
-          ) : activeTab === 'pricing' ? (
-            <PriceManager />
+          ) : activeTab === 'options' ? (
+            <OptionsManager />
           ) : activeTab === 'clients' ? (
             <ClientManager />
           ) : activeTab === 'info-entreprise' ? (
             <CompanyInfoManager />
-          ) : activeTab === 'referral' ? (
-            <ReferralManager />
           ) : activeTab === 'homepage' ? (
             <HomepageImagesManager />
           ) : activeTab === 'trash' ? (
