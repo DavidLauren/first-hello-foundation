@@ -64,24 +64,12 @@ const InvoiceModal = ({ invoice, isOpen, onClose, onDownloadPDF }: InvoiceModalP
         </DialogHeader>
         
         <div className="bg-white p-8 space-y-6" id="invoice-content">
-          {/* Header */}
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">FACTURE</h1>
-              <p className="text-lg font-semibold mt-2">{invoice.invoice_number}</p>
-            </div>
-            <div className="text-right text-sm text-gray-600">
-              <p>Date d'émission : {new Date(invoice.issued_date).toLocaleDateString('fr-FR')}</p>
-              <p>Date d'échéance : {new Date(invoice.due_date).toLocaleDateString('fr-FR')}</p>
-            </div>
-          </div>
-
-          {/* Informations entreprise */}
-          <div className="grid grid-cols-2 gap-8">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">De :</h3>
+          {/* Header avec informations entreprise en haut à gauche */}
+          <div className="flex justify-between items-start mb-8">
+            {/* Informations entreprise en haut à gauche */}
+            <div className="flex-1">
               <div className="text-sm text-gray-600">
-                <p className="font-semibold">{companyInfo?.company_name || 'Configuration requise dans Admin > Infos Entreprise'}</p>
+                <p className="font-bold text-lg text-gray-900 mb-2">{companyInfo?.company_name || 'Configuration requise dans Admin > Infos Entreprise'}</p>
                 {companyInfo?.address && <p>{companyInfo.address}</p>}
                 {companyInfo?.postal_code && companyInfo?.city && (
                   <p>{companyInfo.postal_code} {companyInfo.city}, {companyInfo.country || 'France'}</p>
@@ -92,8 +80,24 @@ const InvoiceModal = ({ invoice, isOpen, onClose, onDownloadPDF }: InvoiceModalP
                 {companyInfo?.vat_number && <p>N° TVA : {companyInfo.vat_number}</p>}
               </div>
             </div>
+            
+            {/* Titre et numéro de facture au centre */}
+            <div className="flex-1 text-center">
+              <h1 className="text-3xl font-bold text-gray-900">FACTURE</h1>
+              <p className="text-xl font-semibold mt-2">{invoice.invoice_number}</p>
+            </div>
+            
+            {/* Dates en haut à droite */}
+            <div className="flex-1 text-right text-sm text-gray-600">
+              <p>Date d'émission : {new Date(invoice.issued_date).toLocaleDateString('fr-FR')}</p>
+              <p>Date d'échéance : {new Date(invoice.due_date).toLocaleDateString('fr-FR')}</p>
+            </div>
+          </div>
+
+          {/* Informations client */}
+          <div className="grid grid-cols-1 gap-4 mb-8">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">À :</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Facturé à :</h3>
               <div className="text-sm text-gray-600">
                 <p className="font-semibold">{invoice.profiles.contact_name}</p>
                 <p>{invoice.profiles.email}</p>

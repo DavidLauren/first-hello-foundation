@@ -134,16 +134,19 @@ const UserInvoicesViewer = () => {
               .invoice-header { 
                 display: flex;
                 justify-content: space-between;
+                align-items: flex-start;
                 margin-bottom: 40px; 
                 border-bottom: 2px solid #eee;
                 padding-bottom: 20px;
               }
               .company-info {
                 flex: 1;
+                margin-right: 20px;
               }
               .invoice-title {
                 flex: 1;
                 text-align: center;
+                margin: 0 20px;
               }
               .invoice-number { 
                 font-size: 24px; 
@@ -249,6 +252,11 @@ const UserInvoicesViewer = () => {
                       invoice.status === 'overdue' ? 'En retard' : invoice.status}
                   </span>
                 </div>
+              </div>
+              
+              <div style="flex: 1; text-align: right; font-size: 12px; color: #666;">
+                <div><strong>Date d'émission:</strong> ${new Date(invoice.issued_date).toLocaleDateString('fr-FR')}</div>
+                <div><strong>Date d'échéance:</strong> ${new Date(invoice.due_date).toLocaleDateString('fr-FR')}</div>
               </div>
             </div>
             
