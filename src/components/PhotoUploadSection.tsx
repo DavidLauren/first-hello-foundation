@@ -106,6 +106,7 @@ const PhotoUploadSection = () => {
         });
         clearFiles();
         setInstructions("");
+        refetch(); // Recharger les photos gratuites disponibles
         return;
       }
 

@@ -27,16 +27,23 @@ serve(async (req) => {
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated");
 
-    const { files, instructions, freePhotosUsed = 0, totalPhotos, finalAmount, forcePayment = false } = await req.json();
+    const { files, instructions, totalPhotos, forcePayment = false } = await req.json();
     
-    console.log("Received payment request:", { files: files?.length, freePhotosUsed, totalPhotos, finalAmount, forcePayment });
+    console.log("Received payment request:", { files: files?.length, totalPhotos, forcePayment });
     if (!files || files.length === 0) {
       throw new Error("No files provided");
     }
 
-    // Calculer les valeurs manquantes
+    // Calculer les valeurs
     const calculatedTotalPhotos = totalPhotos || files.length;
-    const calculatedFreePhotosUsed = Math.min(freePhotosUsed, calculatedTotalPhotos);
+    
+    // Récupérer les photos gratuites disponibles pour cet utilisateur côté serveur
+    const { data: userFreePhotos } = await supabaseClient.rpc('get_user_free_photos', {
+      _user_id: user.id
+    });
+    
+    const availableFreePhotos = userFreePhotos || 0;
+    const calculatedFreePhotosUsed = Math.min(availableFreePhotos, calculatedTotalPhotos);
     
     // Récupérer le prix par photo depuis la base de données
     const { data: priceSettings } = await supabaseClient
@@ -53,11 +60,11 @@ serve(async (req) => {
 
     console.log("Payment calculation:", {
       totalPhotos: calculatedTotalPhotos,
+      availableFreePhotos,
       freePhotosUsed: calculatedFreePhotosUsed,
       photosToCharge,
       pricePerPhoto,
       serverCalculatedAmount,
-      clientFinalAmount: finalAmount,
       forcePayment
     });
 
@@ -219,10 +226,41 @@ serve(async (req) => {
         console.error('Email notification error:', emailError);
       }
 
+      // Mettre à jour l'utilisation des photos gratuites si nécessaire
+      if (calculatedFreePhotosUsed > 0) {
+        // Utiliser les photos gratuites disponibles
+        const { data: promoUsages } = await supabaseClient
+          .from('user_promo_usage')
+          .select('*')
+          .eq('user_id', user.id)
+          .gt('photos_remaining', 0)
+          .order('used_at', { ascending: true });
+
+        if (promoUsages && promoUsages.length > 0) {
+          let photosToDeduct = calculatedFreePhotosUsed;
+          
+          for (const usage of promoUsages) {
+            if (photosToDeduct <= 0) break;
+            
+            const canUse = Math.min(photosToDeduct, usage.photos_remaining);
+            
+            await supabaseClient
+              .from('user_promo_usage')
+              .update({
+                photos_remaining: usage.photos_remaining - canUse,
+                photos_used: usage.photos_used + canUse
+              })
+              .eq('id', usage.id);
+              
+            photosToDeduct -= canUse;
+          }
+        }
+      }
+
       return new Response(JSON.stringify({ 
         success: true,
         order_id: order.id,
-        message: "Commande créée avec succès (gratuite)"
+        message: "Commande créée avec succès - Commande gratuite"
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
