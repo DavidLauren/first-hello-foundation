@@ -173,10 +173,26 @@ serve(async (req) => {
       console.error("Files insertion error:", filesError);
       // Ne pas faire échouer le processus de commande pour les fichiers
     } else {
-      console.log(`${fileInserts.length} files saved for order ${order.id}`);
+    console.log(`${fileInserts.length} files saved for order ${order.id}`);
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    // Récupérer le mode Stripe et la clé secrète depuis les paramètres
+    const { data: stripeSettings } = await supabaseClient
+      .from('app_settings')
+      .select('setting_key, setting_value')
+      .in('setting_key', ['stripe_mode'])
+      .order('setting_key');
+    
+    const stripeMode = stripeSettings?.find(s => s.setting_key === 'stripe_mode')?.setting_value || 'test';
+    
+    // Utiliser la clé secrète appropriée selon le mode
+    const stripeSecretKey = stripeMode === 'test' 
+      ? Deno.env.get("STRIPE_SECRET_KEY") 
+      : Deno.env.get("STRIPE_LIVE_SECRET_KEY") || Deno.env.get("STRIPE_SECRET_KEY");
+    
+    console.log("Using Stripe mode:", stripeMode);
+
+    const stripe = new Stripe(stripeSecretKey || "", {
       apiVersion: "2023-10-16",
     });
 
