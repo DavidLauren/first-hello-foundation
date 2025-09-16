@@ -126,24 +126,26 @@ const ClientManager = () => {
 
   const deleteClient = async (profileId: string) => {
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', profileId);
+      const { data, error } = await supabase.functions.invoke('delete-client-admin', {
+        body: { userId: profileId },
+      });
 
       if (error) throw error;
+      if (data && (data as any).success === false) {
+        throw new Error((data as any).error || 'Erreur lors de la suppression');
+      }
 
       await fetchProfiles();
       toast({
-        title: "Client supprimé",
-        description: "Le client a été supprimé avec succès",
+        title: 'Client supprimé',
+        description: 'Le client et ses données associées ont été supprimés',
       });
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
       toast({
-        title: "Erreur",
+        title: 'Erreur',
         description: "Impossible de supprimer le client",
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   };
@@ -363,6 +365,7 @@ const ClientManager = () => {
                             <AlertDialogAction
                               onClick={() => deleteClient(profile.id)}
                               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              aria-label={`Supprimer le client ${profile.contact_name}`}
                             >
                               Supprimer
                             </AlertDialogAction>
