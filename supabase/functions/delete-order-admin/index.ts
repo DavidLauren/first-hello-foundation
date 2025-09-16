@@ -95,6 +95,17 @@ Deno.serve(async (req) => {
       console.error('Error deleting order files records:', orderFilesError)
     }
 
+    // Supprimer les éléments de facture associés
+    console.log('🗑️ Deleting invoice items records...')
+    const { error: invoiceItemsError } = await supabaseAdmin
+      .from('invoice_items')
+      .delete()
+      .eq('order_id', orderId)
+
+    if (invoiceItemsError) {
+      console.error('Error deleting invoice items records:', invoiceItemsError)
+    }
+
     // Supprimer la commande
     console.log('🗑️ Deleting order record...')
     const { error: orderError } = await supabaseAdmin
