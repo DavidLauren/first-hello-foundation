@@ -390,7 +390,7 @@ const ClientManager = () => {
                             <StickyNote className="h-4 w-4" />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent>
+                        <DialogContent className="max-w-2xl w-full">
                           <DialogHeader>
                             <DialogTitle>Notes administratives - {profile.contact_name}</DialogTitle>
                           </DialogHeader>
@@ -402,8 +402,8 @@ const ClientManager = () => {
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
                                 placeholder="Ajoutez des notes sur ce client (comportement, préférences, historique...)"
-                                rows={6}
-                                className="resize-none"
+                                rows={10}
+                                className="resize-none min-h-[200px]"
                               />
                               <p className="text-sm text-gray-500 mt-1">
                                 Ces notes ne sont visibles que par les administrateurs
