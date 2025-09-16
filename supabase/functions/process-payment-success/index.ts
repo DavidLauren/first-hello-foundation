@@ -21,10 +21,15 @@ serve(async (req) => {
 
     console.log("Processing payment success for session:", sessionId);
 
-    // Initialiser Stripe
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2023-10-16",
-    });
+// Initialiser Stripe avec la clé appropriée (test vs live)
+const isLiveSession = sessionId.startsWith("cs_live_");
+const testKey = Deno.env.get("STRIPE_SECRET_KEY") || "";
+const liveKey = Deno.env.get("STRIPE_LIVE_SECRET_KEY") || "";
+const chosenKey = isLiveSession ? (liveKey || testKey) : testKey;
+console.log("Stripe init mode:", isLiveSession ? "live" : "test");
+const stripe = new Stripe(chosenKey, {
+  apiVersion: "2023-10-16",
+});
 
     // Récupérer la session Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId);
