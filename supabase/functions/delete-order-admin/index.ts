@@ -115,7 +115,28 @@ Deno.serve(async (req) => {
 
     if (orderError) {
       console.error('Error deleting order:', orderError)
-      throw orderError
+      if (orderError.code === '23503') {
+        console.log('🔁 FK constraint from invoice_items detected. Nullifying references then retrying...')
+        const { error: nullifyError } = await supabaseAdmin
+          .from('invoice_items')
+          .update({ order_id: null })
+          .eq('order_id', orderId)
+        if (nullifyError) {
+          console.error('Error nullifying invoice_items.order_id:', nullifyError)
+        } else {
+          console.log('✅ invoice_items references cleared, retrying order delete...')
+        }
+        const { error: retryError } = await supabaseAdmin
+          .from('orders')
+          .delete()
+          .eq('id', orderId)
+        if (retryError) {
+          console.error('Retry delete failed:', retryError)
+          throw retryError
+        }
+      } else {
+        throw orderError
+      }
     }
 
     console.log('✅ Order completely deleted:', orderNumber)
