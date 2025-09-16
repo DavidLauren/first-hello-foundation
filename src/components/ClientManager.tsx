@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Crown, Star, Mail, Building2, Calendar, Users, UserCheck, Search, Trash2 } from 'lucide-react';
+import { Crown, Star, Mail, Building2, Calendar, Users, UserCheck, Search, Trash2, StickyNote } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -24,6 +24,7 @@ interface Profile {
   billing_company?: string;
   vip_activated_at?: string;
   created_at: string;
+  admin_notes?: string;
 }
 
 const ClientManager = () => {
@@ -35,6 +36,8 @@ const ClientManager = () => {
     billing_address: '',
     billing_company: ''
   });
+  const [notesProfile, setNotesProfile] = useState<Profile | null>(null);
+  const [notes, setNotes] = useState('');
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -119,6 +122,37 @@ const ClientManager = () => {
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour les informations",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateNotes = async () => {
+    if (!notesProfile) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          admin_notes: notes
+        })
+        .eq('id', notesProfile.id);
+
+      if (error) throw error;
+
+      await fetchProfiles();
+      setNotesProfile(null);
+      setNotes('');
+      
+      toast({
+        title: "Notes mises à jour",
+        description: "Les notes ont été sauvegardées avec succès",
+      });
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour des notes:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour les notes",
         variant: "destructive",
       });
     }
@@ -341,6 +375,51 @@ const ClientManager = () => {
                           </DialogContent>
                         </Dialog>
                       )}
+                      
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setNotesProfile(profile);
+                              setNotes(profile.admin_notes || '');
+                            }}
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                          >
+                            <StickyNote className="h-4 w-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Notes administratives - {profile.contact_name}</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div>
+                              <Label htmlFor="admin_notes">Notes internes</Label>
+                              <Textarea
+                                id="admin_notes"
+                                value={notes}
+                                onChange={(e) => setNotes(e.target.value)}
+                                placeholder="Ajoutez des notes sur ce client (comportement, préférences, historique...)"
+                                rows={6}
+                                className="resize-none"
+                              />
+                              <p className="text-sm text-gray-500 mt-1">
+                                Ces notes ne sont visibles que par les administrateurs
+                              </p>
+                            </div>
+                            <div className="flex gap-2 pt-4">
+                              <Button onClick={updateNotes} className="flex-1">
+                                Sauvegarder
+                              </Button>
+                              <Button variant="outline" onClick={() => setNotesProfile(null)} className="flex-1">
+                                Annuler
+                              </Button>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                       
                       <AlertDialog>
                         <AlertDialogTrigger asChild>

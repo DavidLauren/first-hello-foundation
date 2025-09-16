@@ -386,6 +386,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          admin_notes: string | null
           billing_address: string | null
           billing_company: string | null
           company_name: string | null
@@ -403,6 +404,7 @@ export type Database = {
           vip_activated_by: string | null
         }
         Insert: {
+          admin_notes?: string | null
           billing_address?: string | null
           billing_company?: string | null
           company_name?: string | null
@@ -420,6 +422,7 @@ export type Database = {
           vip_activated_by?: string | null
         }
         Update: {
+          admin_notes?: string | null
           billing_address?: string | null
           billing_company?: string | null
           company_name?: string | null
