@@ -385,9 +385,12 @@ const ClientManager = () => {
                               setNotesProfile(profile);
                               setNotes(profile.admin_notes || '');
                             }}
-                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                            className={`relative ${profile.admin_notes ? 'text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-300' : 'text-gray-600 hover:text-gray-700 hover:bg-gray-50'}`}
                           >
                             <StickyNote className="h-4 w-4" />
+                            {profile.admin_notes && (
+                              <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+                            )}
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-2xl w-full">
@@ -402,8 +405,8 @@ const ClientManager = () => {
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
                                 placeholder="Ajoutez des notes sur ce client (comportement, préférences, historique...)"
-                                rows={10}
-                                className="resize-none min-h-[200px]"
+                                rows={15}
+                                className="resize-none min-h-[300px]"
                               />
                               <p className="text-sm text-gray-500 mt-1">
                                 Ces notes ne sont visibles que par les administrateurs
