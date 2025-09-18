@@ -3,52 +3,35 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
-interface ImagePair {
-  before: string;
-  after: string;
-  title?: string;
-  description?: string;
-}
-
 interface ImageViewerProps {
   isOpen: boolean;
   onClose: () => void;
-  images: ImagePair[];
-  initialImageIndex: number;
+  beforeImage: string;
+  afterImage: string;
+  title?: string;
+  description?: string;
   initialType: 'before' | 'after';
 }
 
-const ImageViewer = ({ isOpen, onClose, images, initialImageIndex, initialType }: ImageViewerProps) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex);
+const ImageViewer = ({ isOpen, onClose, beforeImage, afterImage, title, description, initialType }: ImageViewerProps) => {
   const [currentType, setCurrentType] = useState<'before' | 'after'>(initialType);
 
-  const currentImage = images[currentImageIndex];
-  const currentSrc = currentType === 'before' ? currentImage?.before : currentImage?.after;
+  const currentSrc = currentType === 'before' ? beforeImage : afterImage;
 
   const handlePrevious = () => {
     if (currentType === 'after') {
       setCurrentType('before');
-    } else {
-      if (currentImageIndex > 0) {
-        setCurrentImageIndex(currentImageIndex - 1);
-        setCurrentType('after');
-      }
     }
   };
 
   const handleNext = () => {
     if (currentType === 'before') {
       setCurrentType('after');
-    } else {
-      if (currentImageIndex < images.length - 1) {
-        setCurrentImageIndex(currentImageIndex + 1);
-        setCurrentType('before');
-      }
     }
   };
 
-  const canGoPrevious = currentType === 'after' || currentImageIndex > 0;
-  const canGoNext = currentType === 'before' || currentImageIndex < images.length - 1;
+  const canGoPrevious = currentType === 'after';
+  const canGoNext = currentType === 'before';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -82,19 +65,19 @@ const ImageViewer = ({ isOpen, onClose, images, initialImageIndex, initialType }
               <h3 className={`text-2xl font-bold ${currentType === 'before' ? 'text-red-400' : 'text-green-400'}`}>
                 {currentType === 'before' ? 'AVANT' : 'APRÈS'}
               </h3>
-              {currentImage?.title && (
-                <p className="text-white/80 text-lg mt-2">{currentImage.title}</p>
+              {title && (
+                <p className="text-white/80 text-lg mt-2">{title}</p>
               )}
             </div>
             
             <img
               src={currentSrc}
-              alt={`${currentType === 'before' ? 'Photo originale' : 'Photo retouchée'}${currentImage?.title ? ` - ${currentImage.title}` : ''}`}
+              alt={`${currentType === 'before' ? 'Photo originale' : 'Photo retouchée'}${title ? ` - ${title}` : ''}`}
               className="max-w-full max-h-[70vh] object-contain rounded-lg"
             />
             
-            {currentImage?.description && currentType === 'after' && (
-              <p className="text-white/70 text-center mt-4 max-w-2xl">{currentImage.description}</p>
+            {description && currentType === 'after' && (
+              <p className="text-white/70 text-center mt-4 max-w-2xl">{description}</p>
             )}
           </div>
 
@@ -112,10 +95,6 @@ const ImageViewer = ({ isOpen, onClose, images, initialImageIndex, initialType }
 
           {/* Navigation indicator */}
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-4 bg-black/50 px-6 py-3 rounded-full">
-            <span className="text-white text-sm">
-              Image {currentImageIndex + 1} / {images.length}
-            </span>
-            <span className="text-white/60">•</span>
             <span className="text-white text-sm">
               {currentType === 'before' ? 'Avant' : 'Après'}
             </span>

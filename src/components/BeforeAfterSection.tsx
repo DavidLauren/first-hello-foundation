@@ -17,23 +17,11 @@ const BeforeAfterSection = () => {
   const { imagePairs, loading: loadingPairs } = useHomepageImagePairs();
   
   const [viewerOpen, setViewerOpen] = useState(false);
-  const [viewerImageIndex, setViewerImageIndex] = useState(0);
   const [viewerImageType, setViewerImageType] = useState<'before' | 'after'>('before');
+  const [viewerImages, setViewerImages] = useState({ before: '', after: '', title: '', description: '' });
 
-  // Prepare all images for the viewer
-  const allImages = [
-    { before: images.before, after: images.after, title: "Exemple principal" },
-    { before: images.before2, after: images.after2, title: "Exemple secondaire" },
-    ...imagePairs.map(pair => ({
-      before: pair.before_image_url,
-      after: pair.after_image_url,
-      title: pair.title,
-      description: pair.description
-    }))
-  ];
-
-  const openViewer = (imageIndex: number, type: 'before' | 'after') => {
-    setViewerImageIndex(imageIndex);
+  const openViewer = (beforeImage: string, afterImage: string, title: string, description: string, type: 'before' | 'after') => {
+    setViewerImages({ before: beforeImage, after: afterImage, title, description });
     setViewerImageType(type);
     setViewerOpen(true);
   };
@@ -83,7 +71,7 @@ const BeforeAfterSection = () => {
                     decoding="async"
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="w-full rounded-xl shadow-elegant cursor-pointer border border-border/20 hover:scale-105 transition-transform duration-200"
-                    onClick={() => openViewer(0, 'before')}
+                    onClick={() => openViewer(images.before, images.after, "Exemple principal", "", 'before')}
                     onError={(e) => {
                       e.currentTarget.src = beforeExample;
                     }}
@@ -98,7 +86,7 @@ const BeforeAfterSection = () => {
                     decoding="async"
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="w-full rounded-xl shadow-elegant cursor-pointer border border-brand-accent/20 hover:scale-105 transition-transform duration-200"
-                    onClick={() => openViewer(0, 'after')}
+                    onClick={() => openViewer(images.before, images.after, "Exemple principal", "", 'after')}
                     onError={(e) => {
                       e.currentTarget.src = afterExample;
                     }}
@@ -116,7 +104,7 @@ const BeforeAfterSection = () => {
                     decoding="async"
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="w-full rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform duration-200"
-                    onClick={() => openViewer(1, 'before')}
+                    onClick={() => openViewer(images.before2, images.after2, "Exemple secondaire", "", 'before')}
                     onError={(e) => {
                       e.currentTarget.src = beforeExample;
                     }}
@@ -131,7 +119,7 @@ const BeforeAfterSection = () => {
                     decoding="async"
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="w-full rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform duration-200"
-                    onClick={() => openViewer(1, 'after')}
+                    onClick={() => openViewer(images.before2, images.after2, "Exemple secondaire", "", 'after')}
                     onError={(e) => {
                       e.currentTarget.src = afterExample;
                     }}
@@ -153,7 +141,7 @@ const BeforeAfterSection = () => {
                           decoding="async"
                           sizes="(max-width: 1024px) 50vw, 16vw"
                           className="max-w-full max-h-96 object-contain rounded-lg shadow-lg cursor-pointer border border-border/10 hover:scale-105 transition-transform duration-200"
-                          onClick={() => openViewer(2 + index, 'before')}
+                          onClick={() => openViewer(pair.before_image_url, pair.after_image_url, pair.title || "", pair.description || "", 'before')}
                           onError={(e) => {
                             e.currentTarget.src = beforeExample;
                           }}
@@ -170,7 +158,7 @@ const BeforeAfterSection = () => {
                           decoding="async"
                           sizes="(max-width: 1024px) 50vw, 16vw"
                           className="max-w-full max-h-96 object-contain rounded-lg shadow-lg cursor-pointer border border-brand-accent/10 hover:scale-105 transition-transform duration-200"
-                          onClick={() => openViewer(2 + index, 'after')}
+                          onClick={() => openViewer(pair.before_image_url, pair.after_image_url, pair.title || "", pair.description || "", 'after')}
                           onError={(e) => {
                             e.currentTarget.src = afterExample;
                           }}
@@ -230,8 +218,10 @@ const BeforeAfterSection = () => {
         <ImageViewer
           isOpen={viewerOpen}
           onClose={() => setViewerOpen(false)}
-          images={allImages}
-          initialImageIndex={viewerImageIndex}
+          beforeImage={viewerImages.before}
+          afterImage={viewerImages.after}
+          title={viewerImages.title}
+          description={viewerImages.description}
           initialType={viewerImageType}
         />
       </div>
