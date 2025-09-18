@@ -112,162 +112,158 @@ const HomepageImagesManager = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Gestion des images avant/après</CardTitle>
+        <CardTitle>Images fixes historiques</CardTitle>
         <p className="text-sm text-muted-foreground">
           Gérez toutes les images "avant" et "après" de la page d'accueil
         </p>
       </CardHeader>
-      <CardContent className="space-y-8">
-        {/* Images fixes historiques */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Images fixes historiques</h3>
-          <div className="space-y-6">
-            {/* Première paire d'images côte à côte */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Image AVANT */}
-              <div className="space-y-4">
-                <Label className="text-lg font-semibold text-destructive">Image AVANT</Label>
-                
-                <div className="flex items-center justify-center border-2 border-dashed border-border rounded-lg p-4">
-                  {images.before ? (
-                    <img 
-                      src={images.before} 
-                      alt="Image avant actuelle" 
-                      className="max-h-48 rounded-lg shadow-lg"
-                      onError={(e) => {
-                        console.error('Erreur chargement image avant:', images.before);
-                        e.currentTarget.src = beforeExample;
-                      }}
-                    />
-                  ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      Aucune image définie
-                    </div>
-                  )}
+      <CardContent className="space-y-6">
+        {/* Première paire d'images côte à côte */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Image AVANT */}
+          <div className="space-y-4">
+            <Label className="text-lg font-semibold text-destructive">Image AVANT</Label>
+            
+            <div className="flex items-center justify-center border-2 border-dashed border-border rounded-lg p-4">
+              {images.before ? (
+                <img 
+                  src={images.before} 
+                  alt="Image avant actuelle" 
+                  className="max-h-48 rounded-lg shadow-lg"
+                  onError={(e) => {
+                    console.error('Erreur chargement image avant:', images.before);
+                    e.currentTarget.src = beforeExample;
+                  }}
+                />
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  Aucune image définie
                 </div>
+              )}
+            </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="before-url">URL de l'image avant</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="before-url"
-                      value={beforeUrl}
-                      onChange={(e) => setBeforeUrl(e.target.value)}
-                      placeholder="https://exemple.com/avant.jpg"
-                    />
-                    <Button 
-                      onClick={() => handleSaveUrl('before')}
-                      disabled={updating}
-                      size="sm"
-                    >
-                      <Save className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      onClick={() => resetToDefault('before')}
-                      disabled={updating}
-                      variant="outline"
-                      size="sm"
-                    >
-                      <RotateCcw className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Button 
-                    onClick={() => beforeFileRef.current?.click()}
-                    disabled={hookUploading || updating}
-                    variant="outline"
-                    size="sm"
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload nouveau fichier
-                  </Button>
-                  <input
-                    ref={beforeFileRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFileUpload(file, 'before');
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Image APRÈS */}
-              <div className="space-y-4">
-                <Label className="text-lg font-semibold text-brand-accent">Image APRÈS</Label>
-                
-                <div className="flex items-center justify-center border-2 border-dashed border-border rounded-lg p-4">
-                  {images.after ? (
-                    <img 
-                      src={images.after} 
-                      alt="Image après actuelle" 
-                      className="max-h-48 rounded-lg shadow-lg"
-                      onError={(e) => {
-                        console.error('Erreur chargement image après:', images.after);
-                        e.currentTarget.src = afterExample;
-                      }}
-                    />
-                  ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      Aucune image définie
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="after-url">URL de l'image après</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="after-url"
-                      value={afterUrl}
-                      onChange={(e) => setAfterUrl(e.target.value)}
-                      placeholder="https://exemple.com/apres.jpg"
-                    />
-                    <Button 
-                      onClick={() => handleSaveUrl('after')}
-                      disabled={updating}
-                      size="sm"
-                    >
-                      <Save className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      onClick={() => resetToDefault('after')}
-                      disabled={updating}
-                      variant="outline"
-                      size="sm"
-                    >
-                      <RotateCcw className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Button 
-                    onClick={() => afterFileRef.current?.click()}
-                    disabled={hookUploading || updating}
-                    variant="outline"
-                    size="sm"
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload nouveau fichier
-                  </Button>
-                  <input
-                    ref={afterFileRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFileUpload(file, 'after');
-                    }}
-                  />
-                </div>
+            <div className="space-y-2">
+              <Label htmlFor="before-url">URL de l'image avant</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="before-url"
+                  value={beforeUrl}
+                  onChange={(e) => setBeforeUrl(e.target.value)}
+                  placeholder="https://exemple.com/avant.jpg"
+                />
+                <Button 
+                  onClick={() => handleSaveUrl('before')}
+                  disabled={updating}
+                  size="sm"
+                >
+                  <Save className="h-4 w-4" />
+                </Button>
+                <Button 
+                  onClick={() => resetToDefault('before')}
+                  disabled={updating}
+                  variant="outline"
+                  size="sm"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </Button>
               </div>
             </div>
+
+            <div className="flex items-center gap-2">
+              <Button 
+                onClick={() => beforeFileRef.current?.click()}
+                disabled={hookUploading || updating}
+                variant="outline"
+                size="sm"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                Upload nouveau fichier
+              </Button>
+              <input
+                ref={beforeFileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileUpload(file, 'before');
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Image APRÈS */}
+          <div className="space-y-4">
+            <Label className="text-lg font-semibold text-brand-accent">Image APRÈS</Label>
+            
+            <div className="flex items-center justify-center border-2 border-dashed border-border rounded-lg p-4">
+              {images.after ? (
+                <img 
+                  src={images.after} 
+                  alt="Image après actuelle" 
+                  className="max-h-48 rounded-lg shadow-lg"
+                  onError={(e) => {
+                    console.error('Erreur chargement image après:', images.after);
+                    e.currentTarget.src = afterExample;
+                  }}
+                />
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  Aucune image définie
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="after-url">URL de l'image après</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="after-url"
+                  value={afterUrl}
+                  onChange={(e) => setAfterUrl(e.target.value)}
+                  placeholder="https://exemple.com/apres.jpg"
+                />
+                <Button 
+                  onClick={() => handleSaveUrl('after')}
+                  disabled={updating}
+                  size="sm"
+                >
+                  <Save className="h-4 w-4" />
+                </Button>
+                <Button 
+                  onClick={() => resetToDefault('after')}
+                  disabled={updating}
+                  variant="outline"
+                  size="sm"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button 
+                onClick={() => afterFileRef.current?.click()}
+                disabled={hookUploading || updating}
+                variant="outline"
+                size="sm"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                Upload nouveau fichier
+              </Button>
+              <input
+                ref={afterFileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileUpload(file, 'after');
+                }}
+              />
+            </div>
+          </div>
+        </div>
 
             {/* Deuxième paire d'images côte à côte */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -336,25 +332,94 @@ const HomepageImagesManager = () => {
                     <Upload className="h-4 w-4 mr-2" /> Upload nouveau fichier
                   </Button>
                   <input ref={after2FileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, 'after2'); }} />
-                </div>
               </div>
             </div>
-            
-            {(hookUploading || updating) && (
-              <div className="text-center p-4">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-brand-primary mx-auto"></div>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {hookUploading ? 'Upload en cours...' : 'Mise à jour...'}
-                </p>
+          </div>
+
+        {/* Deuxième paire d'images côte à côte */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Image AVANT 2 */}
+          <div className="space-y-4">
+            <Label className="text-lg font-semibold text-destructive">Image AVANT 2</Label>
+            <div className="flex items-center justify-center border-2 border-dashed border-border rounded-lg p-4">
+              {images.before2 ? (
+                <img
+                  src={images.before2}
+                  alt="Image avant 2 actuelle"
+                  className="max-h-48 rounded-lg shadow-lg"
+                  onError={(e) => {
+                    console.error('Erreur chargement image avant 2:', images.before2);
+                    e.currentTarget.src = beforeExample;
+                  }}
+                />
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">Aucune image définie</div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="before2-url">URL de l'image avant 2</Label>
+              <div className="flex gap-2">
+                <Input id="before2-url" value={before2Url} onChange={(e) => setBefore2Url(e.target.value)} placeholder="https://exemple.com/avant2.jpg" />
+                <Button onClick={() => handleSaveUrl('before2')} disabled={updating} size="sm"><Save className="h-4 w-4" /></Button>
+                <Button onClick={() => resetToDefault('before2')} disabled={updating} variant="outline" size="sm"><RotateCcw className="h-4 w-4" /></Button>
               </div>
-            )}
+            </div>
+            <div className="flex items-center gap-2">
+              <Button onClick={() => before2FileRef.current?.click()} disabled={hookUploading || updating} variant="outline" size="sm">
+                <Upload className="h-4 w-4 mr-2" /> Upload nouveau fichier
+              </Button>
+              <input ref={before2FileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, 'before2'); }} />
+            </div>
+          </div>
+
+          {/* Image APRÈS 2 */}
+          <div className="space-y-4">
+            <Label className="text-lg font-semibold text-brand-accent">Image APRÈS 2</Label>
+            <div className="flex items-center justify-center border-2 border-dashed border-border rounded-lg p-4">
+              {images.after2 ? (
+                <img
+                  src={images.after2}
+                  alt="Image après 2 actuelle"
+                  className="max-h-48 rounded-lg shadow-lg"
+                  onError={(e) => {
+                    console.error('Erreur chargement image après 2:', images.after2);
+                    e.currentTarget.src = afterExample;
+                  }}
+                />
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">Aucune image définie</div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="after2-url">URL de l'image après 2</Label>
+              <div className="flex gap-2">
+                <Input id="after2-url" value={after2Url} onChange={(e) => setAfter2Url(e.target.value)} placeholder="https://exemple.com/apres2.jpg" />
+                <Button onClick={() => handleSaveUrl('after2')} disabled={updating} size="sm"><Save className="h-4 w-4" /></Button>
+                <Button onClick={() => resetToDefault('after2')} disabled={updating} variant="outline" size="sm"><RotateCcw className="h-4 w-4" /></Button>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button onClick={() => after2FileRef.current?.click()} disabled={hookUploading || updating} variant="outline" size="sm">
+                <Upload className="h-4 w-4 mr-2" /> Upload nouveau fichier
+              </Button>
+              <input ref={after2FileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, 'after2'); }} />
+            </div>
           </div>
         </div>
 
-        {/* Nouvelles images dynamiques */}
+        {/* Intégration des images dynamiques dans le même format */}
         <div className="border-t pt-6">
           <DynamicHomepageImagesManager />
         </div>
+        
+        {(hookUploading || updating) && (
+          <div className="text-center p-4">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-brand-primary mx-auto"></div>
+            <p className="text-sm text-muted-foreground mt-2">
+              {hookUploading ? 'Upload en cours...' : 'Mise à jour...'}
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
