@@ -124,7 +124,7 @@ const BeforeAfterSection = () => {
                       loading="lazy"
                       decoding="async"
                       sizes="(max-width: 768px) 100vw, 50vw"
-                      className="w-full rounded-lg shadow-lg cursor-pointer border border-border/10"
+                      className="w-full max-h-80 object-contain rounded-lg shadow-lg cursor-pointer border border-border/10"
                       onError={(e) => {
                         e.currentTarget.src = beforeExample;
                       }}
@@ -143,7 +143,7 @@ const BeforeAfterSection = () => {
                       loading="lazy"
                       decoding="async"
                       sizes="(max-width: 768px) 100vw, 50vw"
-                      className="w-full rounded-lg shadow-lg cursor-pointer border border-brand-accent/10"
+                      className="w-full max-h-80 object-contain rounded-lg shadow-lg cursor-pointer border border-brand-accent/10"
                       onError={(e) => {
                         e.currentTarget.src = afterExample;
                       }}
