@@ -33,7 +33,7 @@ const AdminPage = () => {
   const { examples, loading: examplesLoading, saveExample, deleteExample, reorderExamples } = useExamples();
   const [editingExample, setEditingExample] = useState<Example | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [activeTab, setActiveTab] = useState<'orders' | 'examples' | 'media' | 'options' | 'clients' | 'billing' | 'info-entreprise' | 'homepage' | 'trash'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'examples' | 'media' | 'options' | 'clients' | 'billing' | 'info-entreprise' | 'trash'>('orders');
   const [billingSubTab, setBillingSubTab] = useState<'overview' | 'invoices' | 'info'>('overview');
 
   useEffect(() => {
@@ -196,17 +196,6 @@ const AdminPage = () => {
               </button>
               <button
                 className={`px-4 py-2 font-medium transition-colors flex items-center gap-2 ${
-                  activeTab === 'homepage' 
-                    ? 'text-brand-primary border-b-2 border-brand-primary' 
-                    : 'text-gray-600 hover:text-brand-primary'
-                }`}
-                onClick={() => setActiveTab('homepage')}
-              >
-                <Image className="h-4 w-4" />
-                Page d'accueil
-              </button>
-              <button
-                className={`px-4 py-2 font-medium transition-colors flex items-center gap-2 ${
                   activeTab === 'trash' 
                     ? 'text-brand-primary border-b-2 border-brand-primary' 
                     : 'text-gray-600 hover:text-brand-primary'
@@ -249,8 +238,6 @@ const AdminPage = () => {
             <ClientManager />
           ) : activeTab === 'info-entreprise' ? (
             <CompanyInfoManager />
-          ) : activeTab === 'homepage' ? (
-            <HomepageImagesManager />
           ) : activeTab === 'trash' ? (
             <TrashManager />
           ) : (

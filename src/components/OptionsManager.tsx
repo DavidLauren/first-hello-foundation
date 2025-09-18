@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Gift, Euro, Users, CreditCard, Download } from "lucide-react";
+import { Gift, Euro, Users, CreditCard, Download, Home } from "lucide-react";
 import PromoCodeManager from './PromoCodeManager';
 import PriceManager from './PriceManager';
 import ReferralManager from './ReferralManager';
 import StripeManager from './StripeManager';
 import EmailExportManager from './EmailExportManager';
+import HomepageImagesManager from './HomepageImagesManager';
 
 const OptionsManager = () => {
-  const [activeSubTab, setActiveSubTab] = useState<'promo' | 'pricing' | 'referral' | 'stripe' | 'export'>('promo');
+  const [activeSubTab, setActiveSubTab] = useState<'promo' | 'pricing' | 'referral' | 'stripe' | 'export' | 'homepage'>('promo');
 
   return (
     <div className="space-y-6">
@@ -71,6 +72,15 @@ const OptionsManager = () => {
                 <Download className="h-4 w-4" />
                 Export
               </Button>
+              <Button
+                variant={activeSubTab === 'homepage' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setActiveSubTab('homepage')}
+                className="flex items-center gap-2"
+              >
+                <Home className="h-4 w-4" />
+                Page d'accueil
+              </Button>
             </div>
           </div>
 
@@ -80,6 +90,7 @@ const OptionsManager = () => {
           {activeSubTab === 'referral' && <ReferralManager />}
           {activeSubTab === 'stripe' && <StripeManager />}
           {activeSubTab === 'export' && <EmailExportManager />}
+          {activeSubTab === 'homepage' && <HomepageImagesManager />}
         </CardContent>
       </Card>
     </div>
