@@ -112,52 +112,54 @@ const BeforeAfterSection = () => {
               </div>
               
               {/* Images dynamiques ajoutées depuis l'admin */}
-              {imagePairs.map((pair, index) => (
-                <div key={pair.id} className="grid md:grid-cols-2 gap-8">
-                  <div className="text-center animate-slide-in-left">
-                    <h3 className="text-xl font-bold mb-4 text-destructive">
-                      AVANT
-                    </h3>
-                    <div className="flex justify-center">
-                      <img 
-                        src={pair.before_image_url} 
-                        alt={`Photo originale - ${pair.title}`}
-                        loading="lazy"
-                        decoding="async"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="max-w-full max-h-80 object-contain rounded-lg shadow-lg cursor-pointer border border-border/10"
-                        onError={(e) => {
-                          e.currentTarget.src = beforeExample;
-                        }}
-                      />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {imagePairs.map((pair, index) => (
+                  <div key={pair.id} className="space-y-6">
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold mb-2 text-destructive">AVANT</h4>
+                      <div className="flex justify-center">
+                        <img 
+                          src={pair.before_image_url} 
+                          alt={`Photo originale - ${pair.title}`}
+                          loading="lazy"
+                          decoding="async"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="max-w-full max-h-60 object-contain rounded-lg shadow-lg cursor-pointer border border-border/10"
+                          onError={(e) => {
+                            e.currentTarget.src = beforeExample;
+                          }}
+                        />
+                      </div>
                     </div>
-                    {pair.title && (
-                      <p className="text-sm font-medium text-muted-foreground mt-2">{pair.title}</p>
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold mb-2 text-brand-accent">APRÈS</h4>
+                      <div className="flex justify-center">
+                        <img 
+                          src={pair.after_image_url} 
+                          alt={`Photo retouchée - ${pair.title}`}
+                          loading="lazy"
+                          decoding="async"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="max-w-full max-h-60 object-contain rounded-lg shadow-lg cursor-pointer border border-brand-accent/10"
+                          onError={(e) => {
+                            e.currentTarget.src = afterExample;
+                          }}
+                        />
+                      </div>
+                    </div>
+                    {(pair.title || pair.description) && (
+                      <div className="text-center">
+                        {pair.title && (
+                          <p className="text-sm font-medium text-muted-foreground">{pair.title}</p>
+                        )}
+                        {pair.description && (
+                          <p className="text-xs text-muted-foreground mt-1">{pair.description}</p>
+                        )}
+                      </div>
                     )}
                   </div>
-                  <div className="text-center animate-slide-in-right">
-                    <h3 className="text-xl font-bold mb-4 text-brand-accent">
-                      APRÈS
-                    </h3>
-                    <div className="flex justify-center">
-                      <img 
-                        src={pair.after_image_url} 
-                        alt={`Photo retouchée - ${pair.title}`}
-                        loading="lazy"
-                        decoding="async"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="max-w-full max-h-80 object-contain rounded-lg shadow-lg cursor-pointer border border-brand-accent/10"
-                        onError={(e) => {
-                          e.currentTarget.src = afterExample;
-                        }}
-                      />
-                    </div>
-                    {pair.description && (
-                      <p className="text-sm text-muted-foreground mt-2">{pair.description}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
           
