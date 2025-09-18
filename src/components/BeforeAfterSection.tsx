@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Wand2, Clock, Award } from "lucide-react";
@@ -5,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomepageImages } from "@/hooks/useHomepageImages";
 import { useHomepageImagePairs } from "@/hooks/useHomepageImagePairs";
+import ImageViewer from "@/components/ImageViewer";
 import beforeExample from "@/assets/before-example.jpg";
 import afterExample from "@/assets/after-example.jpg";
 
@@ -13,6 +15,28 @@ const BeforeAfterSection = () => {
   const { user } = useAuth();
   const { images, loading } = useHomepageImages();
   const { imagePairs, loading: loadingPairs } = useHomepageImagePairs();
+  
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerImageIndex, setViewerImageIndex] = useState(0);
+  const [viewerImageType, setViewerImageType] = useState<'before' | 'after'>('before');
+
+  // Prepare all images for the viewer
+  const allImages = [
+    { before: images.before, after: images.after, title: "Exemple principal" },
+    { before: images.before2, after: images.after2, title: "Exemple secondaire" },
+    ...imagePairs.map(pair => ({
+      before: pair.before_image_url,
+      after: pair.after_image_url,
+      title: pair.title,
+      description: pair.description
+    }))
+  ];
+
+  const openViewer = (imageIndex: number, type: 'before' | 'after') => {
+    setViewerImageIndex(imageIndex);
+    setViewerImageType(type);
+    setViewerOpen(true);
+  };
   
   const handleTryPhoto = () => {
     if (user) {
@@ -58,7 +82,8 @@ const BeforeAfterSection = () => {
                     loading="lazy"
                     decoding="async"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="w-full rounded-xl shadow-elegant cursor-pointer border border-border/20"
+                    className="w-full rounded-xl shadow-elegant cursor-pointer border border-border/20 hover:scale-105 transition-transform duration-200"
+                    onClick={() => openViewer(0, 'before')}
                     onError={(e) => {
                       e.currentTarget.src = beforeExample;
                     }}
@@ -72,7 +97,8 @@ const BeforeAfterSection = () => {
                     loading="lazy"
                     decoding="async"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="w-full rounded-xl shadow-elegant cursor-pointer border border-brand-accent/20"
+                    className="w-full rounded-xl shadow-elegant cursor-pointer border border-brand-accent/20 hover:scale-105 transition-transform duration-200"
+                    onClick={() => openViewer(0, 'after')}
                     onError={(e) => {
                       e.currentTarget.src = afterExample;
                     }}
@@ -89,7 +115,8 @@ const BeforeAfterSection = () => {
                     loading="lazy"
                     decoding="async"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="w-full rounded-lg shadow-lg cursor-pointer"
+                    className="w-full rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform duration-200"
+                    onClick={() => openViewer(1, 'before')}
                     onError={(e) => {
                       e.currentTarget.src = beforeExample;
                     }}
@@ -103,7 +130,8 @@ const BeforeAfterSection = () => {
                     loading="lazy"
                     decoding="async"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="w-full rounded-lg shadow-lg cursor-pointer"
+                    className="w-full rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform duration-200"
+                    onClick={() => openViewer(1, 'after')}
                     onError={(e) => {
                       e.currentTarget.src = afterExample;
                     }}
@@ -124,7 +152,8 @@ const BeforeAfterSection = () => {
                           loading="lazy"
                           decoding="async"
                           sizes="(max-width: 1024px) 50vw, 16vw"
-                          className="max-w-full max-h-96 object-contain rounded-lg shadow-lg cursor-pointer border border-border/10"
+                          className="max-w-full max-h-96 object-contain rounded-lg shadow-lg cursor-pointer border border-border/10 hover:scale-105 transition-transform duration-200"
+                          onClick={() => openViewer(2 + index, 'before')}
                           onError={(e) => {
                             e.currentTarget.src = beforeExample;
                           }}
@@ -140,7 +169,8 @@ const BeforeAfterSection = () => {
                           loading="lazy"
                           decoding="async"
                           sizes="(max-width: 1024px) 50vw, 16vw"
-                          className="max-w-full max-h-96 object-contain rounded-lg shadow-lg cursor-pointer border border-brand-accent/10"
+                          className="max-w-full max-h-96 object-contain rounded-lg shadow-lg cursor-pointer border border-brand-accent/10 hover:scale-105 transition-transform duration-200"
+                          onClick={() => openViewer(2 + index, 'after')}
                           onError={(e) => {
                             e.currentTarget.src = afterExample;
                           }}
@@ -196,6 +226,14 @@ const BeforeAfterSection = () => {
             </Button>
           </div>
         </Card>
+
+        <ImageViewer
+          isOpen={viewerOpen}
+          onClose={() => setViewerOpen(false)}
+          images={allImages}
+          initialImageIndex={viewerImageIndex}
+          initialType={viewerImageType}
+        />
       </div>
     </section>
   );
