@@ -250,6 +250,42 @@ export type Database = {
         }
         Relationships: []
       }
+      homepage_image_pairs: {
+        Row: {
+          after_image_url: string
+          before_image_url: string
+          created_at: string
+          description: string
+          display_order: number
+          id: string
+          is_active: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          after_image_url: string
+          before_image_url: string
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          after_image_url?: string
+          before_image_url?: string
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       invoice_items: {
         Row: {
           created_at: string
