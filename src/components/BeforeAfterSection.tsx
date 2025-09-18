@@ -118,17 +118,19 @@ const BeforeAfterSection = () => {
                     <h3 className="text-xl font-bold mb-4 text-destructive">
                       AVANT
                     </h3>
-                    <img 
-                      src={pair.before_image_url} 
-                      alt={`Photo originale - ${pair.title}`}
-                      loading="lazy"
-                      decoding="async"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="w-full max-h-80 object-contain rounded-lg shadow-lg cursor-pointer border border-border/10"
-                      onError={(e) => {
-                        e.currentTarget.src = beforeExample;
-                      }}
-                    />
+                    <div className="flex justify-center">
+                      <img 
+                        src={pair.before_image_url} 
+                        alt={`Photo originale - ${pair.title}`}
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="max-w-full max-h-80 object-contain rounded-lg shadow-lg cursor-pointer border border-border/10"
+                        onError={(e) => {
+                          e.currentTarget.src = beforeExample;
+                        }}
+                      />
+                    </div>
                     {pair.title && (
                       <p className="text-sm font-medium text-muted-foreground mt-2">{pair.title}</p>
                     )}
@@ -137,17 +139,19 @@ const BeforeAfterSection = () => {
                     <h3 className="text-xl font-bold mb-4 text-brand-accent">
                       APRÈS
                     </h3>
-                    <img 
-                      src={pair.after_image_url} 
-                      alt={`Photo retouchée - ${pair.title}`}
-                      loading="lazy"
-                      decoding="async"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="w-full max-h-80 object-contain rounded-lg shadow-lg cursor-pointer border border-brand-accent/10"
-                      onError={(e) => {
-                        e.currentTarget.src = afterExample;
-                      }}
-                    />
+                    <div className="flex justify-center">
+                      <img 
+                        src={pair.after_image_url} 
+                        alt={`Photo retouchée - ${pair.title}`}
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="max-w-full max-h-80 object-contain rounded-lg shadow-lg cursor-pointer border border-brand-accent/10"
+                        onError={(e) => {
+                          e.currentTarget.src = afterExample;
+                        }}
+                      />
+                    </div>
                     {pair.description && (
                       <p className="text-sm text-muted-foreground mt-2">{pair.description}</p>
                     )}
