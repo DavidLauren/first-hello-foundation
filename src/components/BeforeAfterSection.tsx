@@ -112,7 +112,7 @@ const BeforeAfterSection = () => {
               </div>
               
               {/* Images dynamiques ajoutées depuis l'admin */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {imagePairs.map((pair, index) => (
                   <div key={pair.id} className="grid grid-cols-2 gap-4">
                     <div className="text-center">
