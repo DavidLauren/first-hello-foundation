@@ -4,6 +4,7 @@ import { Wand2, Clock, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomepageImages } from "@/hooks/useHomepageImages";
+import { useHomepageImagePairs } from "@/hooks/useHomepageImagePairs";
 import beforeExample from "@/assets/before-example.jpg";
 import afterExample from "@/assets/after-example.jpg";
 
@@ -11,6 +12,7 @@ const BeforeAfterSection = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { images, loading } = useHomepageImages();
+  const { imagePairs, loading: loadingPairs } = useHomepageImagePairs();
   
   const handleTryPhoto = () => {
     if (user) {
@@ -40,74 +42,122 @@ const BeforeAfterSection = () => {
         </div>
 
         <Card className="card-premium p-10 mb-10 animate-scale-in">
-          {loading ? (
+          {(loading || loadingPairs) ? (
             <div className="flex justify-center items-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary"></div>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 gap-12 mb-12">
-              <div className="text-center animate-slide-in-left">
-                <h3 className="text-3xl font-bold mb-6 text-destructive">AVANT</h3>
-                <img 
-                  src={images.before} 
-                  alt="Photo originale avec mobilier" 
-                  loading="lazy"
-                  decoding="async"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="w-full rounded-xl shadow-elegant cursor-pointer border border-border/20"
-                  onError={(e) => {
-                    e.currentTarget.src = beforeExample;
-                  }}
-                />
-              </div>
-              <div className="text-center animate-slide-in-right">
-                <h3 className="text-3xl font-bold mb-6 text-brand-accent">APRÈS</h3>
-                <img 
-                  src={images.after} 
-                  alt="Photo retouchée sans mobilier" 
-                  loading="lazy"
-                  decoding="async"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="w-full rounded-xl shadow-elegant cursor-pointer border border-brand-accent/20"
-                  onError={(e) => {
-                    e.currentTarget.src = afterExample;
-                  }}
-                />
-              </div>
-            </div>
-          )}
-          
-          {/* Deuxième paire d'images */}
-          {!loading && (
-            <div className="grid md:grid-cols-2 gap-8 mb-8">
-              <div className="text-center">
-                <h3 className="text-2xl font-bold mb-4 text-destructive">AVANT</h3>
-                <img 
-                  src={images.before2} 
-                  alt="Photo originale avec objets à supprimer" 
-                  loading="lazy"
-                  decoding="async"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="w-full rounded-lg shadow-lg cursor-pointer"
-                  onError={(e) => {
-                    e.currentTarget.src = beforeExample;
-                  }}
-                />
-              </div>
-              <div className="text-center">
-                <h3 className="text-2xl font-bold mb-4 text-brand-accent">APRÈS</h3>
-                <img 
-                  src={images.after2} 
-                  alt="Photo retouchée avec objets supprimés" 
-                  loading="lazy"
-                  decoding="async"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="w-full rounded-lg shadow-lg cursor-pointer"
-                  onError={(e) => {
-                    e.currentTarget.src = afterExample;
-                  }}
-                />
-              </div>
+            <div className="space-y-12">
+              {/* Images statiques de fallback si aucune image dynamique */}
+              {imagePairs.length === 0 && (
+                <>
+                  <div className="grid md:grid-cols-2 gap-12">
+                    <div className="text-center animate-slide-in-left">
+                      <h3 className="text-3xl font-bold mb-6 text-destructive">AVANT</h3>
+                      <img 
+                        src={images.before} 
+                        alt="Photo originale avec mobilier" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="w-full rounded-xl shadow-elegant cursor-pointer border border-border/20"
+                        onError={(e) => {
+                          e.currentTarget.src = beforeExample;
+                        }}
+                      />
+                    </div>
+                    <div className="text-center animate-slide-in-right">
+                      <h3 className="text-3xl font-bold mb-6 text-brand-accent">APRÈS</h3>
+                      <img 
+                        src={images.after} 
+                        alt="Photo retouchée sans mobilier" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="w-full rounded-xl shadow-elegant cursor-pointer border border-brand-accent/20"
+                        onError={(e) => {
+                          e.currentTarget.src = afterExample;
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold mb-4 text-destructive">AVANT</h3>
+                      <img 
+                        src={images.before2} 
+                        alt="Photo originale avec objets à supprimer" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="w-full rounded-lg shadow-lg cursor-pointer"
+                        onError={(e) => {
+                          e.currentTarget.src = beforeExample;
+                        }}
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold mb-4 text-brand-accent">APRÈS</h3>
+                      <img 
+                        src={images.after2} 
+                        alt="Photo retouchée avec objets supprimés" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="w-full rounded-lg shadow-lg cursor-pointer"
+                        onError={(e) => {
+                          e.currentTarget.src = afterExample;
+                        }}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+              
+              {/* Images dynamiques depuis l'admin */}
+              {imagePairs.map((pair, index) => (
+                <div key={pair.id} className="grid md:grid-cols-2 gap-8">
+                  <div className="text-center animate-slide-in-left">
+                    <h3 className={`${index === 0 ? 'text-3xl' : 'text-2xl'} font-bold mb-6 text-destructive`}>
+                      AVANT
+                    </h3>
+                    <img 
+                      src={pair.before_image_url} 
+                      alt={`Photo originale - ${pair.title}`}
+                      loading="lazy"
+                      decoding="async"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className={`w-full rounded-${index === 0 ? 'xl' : 'lg'} shadow-${index === 0 ? 'elegant' : 'lg'} cursor-pointer ${index === 0 ? 'border border-border/20' : ''}`}
+                      onError={(e) => {
+                        e.currentTarget.src = beforeExample;
+                      }}
+                    />
+                    {pair.title && (
+                      <p className="text-sm text-muted-foreground mt-2">{pair.title}</p>
+                    )}
+                  </div>
+                  <div className="text-center animate-slide-in-right">
+                    <h3 className={`${index === 0 ? 'text-3xl' : 'text-2xl'} font-bold mb-6 text-brand-accent`}>
+                      APRÈS
+                    </h3>
+                    <img 
+                      src={pair.after_image_url} 
+                      alt={`Photo retouchée - ${pair.title}`}
+                      loading="lazy"
+                      decoding="async"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className={`w-full rounded-${index === 0 ? 'xl' : 'lg'} shadow-${index === 0 ? 'elegant' : 'lg'} cursor-pointer ${index === 0 ? 'border border-brand-accent/20' : ''}`}
+                      onError={(e) => {
+                        e.currentTarget.src = afterExample;
+                      }}
+                    />
+                    {pair.description && (
+                      <p className="text-sm text-muted-foreground mt-2">{pair.description}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
           
