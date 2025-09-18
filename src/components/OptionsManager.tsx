@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Gift, Euro, Users, CreditCard } from "lucide-react";
+import { Gift, Euro, Users, CreditCard, Download } from "lucide-react";
 import PromoCodeManager from './PromoCodeManager';
 import PriceManager from './PriceManager';
 import ReferralManager from './ReferralManager';
-
 import StripeManager from './StripeManager';
+import EmailExportManager from './EmailExportManager';
 
 const OptionsManager = () => {
-  const [activeSubTab, setActiveSubTab] = useState<'promo' | 'pricing' | 'referral' | 'stripe'>('promo');
+  const [activeSubTab, setActiveSubTab] = useState<'promo' | 'pricing' | 'referral' | 'stripe' | 'export'>('promo');
 
   return (
     <div className="space-y-6">
@@ -62,6 +62,15 @@ const OptionsManager = () => {
                 <CreditCard className="h-4 w-4" />
                 Stripe
               </Button>
+              <Button
+                variant={activeSubTab === 'export' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setActiveSubTab('export')}
+                className="flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Export
+              </Button>
             </div>
           </div>
 
@@ -70,6 +79,7 @@ const OptionsManager = () => {
           {activeSubTab === 'pricing' && <PriceManager />}
           {activeSubTab === 'referral' && <ReferralManager />}
           {activeSubTab === 'stripe' && <StripeManager />}
+          {activeSubTab === 'export' && <EmailExportManager />}
         </CardContent>
       </Card>
     </div>
