@@ -112,9 +112,9 @@ const BeforeAfterSection = () => {
               </div>
               
               {/* Images dynamiques ajoutées depuis l'admin */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {imagePairs.map((pair, index) => (
-                  <div key={pair.id} className="space-y-6">
+                  <div key={pair.id} className="grid grid-cols-2 gap-4">
                     <div className="text-center">
                       <h4 className="text-lg font-bold mb-2 text-destructive">AVANT</h4>
                       <div className="flex justify-center">
@@ -123,7 +123,7 @@ const BeforeAfterSection = () => {
                           alt={`Photo originale - ${pair.title}`}
                           loading="lazy"
                           decoding="async"
-                          sizes="(max-width: 768px) 100vw, 33vw"
+                          sizes="(max-width: 1024px) 50vw, 16vw"
                           className="max-w-full max-h-60 object-contain rounded-lg shadow-lg cursor-pointer border border-border/10"
                           onError={(e) => {
                             e.currentTarget.src = beforeExample;
@@ -139,7 +139,7 @@ const BeforeAfterSection = () => {
                           alt={`Photo retouchée - ${pair.title}`}
                           loading="lazy"
                           decoding="async"
-                          sizes="(max-width: 768px) 100vw, 33vw"
+                          sizes="(max-width: 1024px) 50vw, 16vw"
                           className="max-w-full max-h-60 object-contain rounded-lg shadow-lg cursor-pointer border border-brand-accent/10"
                           onError={(e) => {
                             e.currentTarget.src = afterExample;
@@ -148,7 +148,7 @@ const BeforeAfterSection = () => {
                       </div>
                     </div>
                     {(pair.title || pair.description) && (
-                      <div className="text-center">
+                      <div className="col-span-2 text-center mt-2">
                         {pair.title && (
                           <p className="text-sm font-medium text-muted-foreground">{pair.title}</p>
                         )}
