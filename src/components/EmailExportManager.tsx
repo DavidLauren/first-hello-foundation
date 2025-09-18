@@ -15,10 +15,8 @@ const EmailExportManager = () => {
     }
 
     const csvContent = [
-      'Email,Nom,Prénom,Nom de l\'entreprise,Type',
-      ...data.map(row => 
-        `"${row.email}","${row.last_name || ''}","${row.first_name || ''}","${row.company_name || ''}","${row.type}"`
-      )
+      'Email',
+      ...data.map(row => row.email)
     ].join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -146,11 +144,7 @@ const EmailExportManager = () => {
         <div className="mt-6 p-4 bg-gray-50 rounded-lg">
           <h3 className="font-medium text-sm mb-2">Format du fichier CSV :</h3>
           <ul className="text-xs text-gray-600 space-y-1">
-            <li>• Email : Adresse email du client</li>
-            <li>• Nom : Nom de famille</li>
-            <li>• Prénom : Prénom</li>
-            <li>• Nom de l'entreprise : Nom de la société (si renseigné)</li>
-            <li>• Type : Particulier ou Entreprise</li>
+            <li>• Email : Adresse email du client (seulement)</li>
           </ul>
         </div>
       </CardContent>
