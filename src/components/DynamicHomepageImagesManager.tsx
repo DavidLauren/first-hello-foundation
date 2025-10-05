@@ -134,12 +134,12 @@ const DynamicHomepageImagesManager = () => {
   return (
     <div className="space-y-6">
       <Card>
-      <CardHeader>
-        <CardTitle>Toutes les paires d'images</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Gérez toutes les paires d'images avant/après. Utilisez le drag & drop pour réorganiser l'ordre d'affichage.
-        </p>
-      </CardHeader>
+        <CardHeader>
+          <CardTitle>Gestion des images avant/après</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Ajoutez autant de paires d'images avant/après que vous souhaitez pour la page d'accueil
+          </p>
+        </CardHeader>
         <CardContent>
           <div className="mb-6">
             <Button 
