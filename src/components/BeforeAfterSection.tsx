@@ -60,39 +60,41 @@ const BeforeAfterSection = () => {
             </div>
           ) : (
             <div className="space-y-12">
-              {/* Images statiques existantes (toujours affichées) */}
-              <div className="grid md:grid-cols-2 gap-12">
-                <div className="text-center animate-slide-in-left">
-                  <h3 className="text-3xl font-bold mb-6 text-destructive">AVANT</h3>
-                  <img 
-                    src={images.before} 
-                    alt="Photo originale avec mobilier" 
-                    loading="lazy"
-                    decoding="async"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="w-full rounded-xl shadow-elegant cursor-pointer border border-border/20 hover:scale-105 transition-transform duration-200"
-                    onClick={() => openViewer(images.before, images.after, "Exemple principal", "", 'before')}
-                    onError={(e) => {
-                      e.currentTarget.src = beforeExample;
-                    }}
-                  />
+              {/* Images statiques existantes (affichées seulement si activées) */}
+              {pair1Enabled && (
+                <div className="grid md:grid-cols-2 gap-12">
+                  <div className="text-center animate-slide-in-left">
+                    <h3 className="text-3xl font-bold mb-6 text-destructive">AVANT</h3>
+                    <img 
+                      src={images.before} 
+                      alt="Photo originale avec mobilier" 
+                      loading="lazy"
+                      decoding="async"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="w-full rounded-xl shadow-elegant cursor-pointer border border-border/20 hover:scale-105 transition-transform duration-200"
+                      onClick={() => openViewer(images.before, images.after, "Exemple principal", "", 'before')}
+                      onError={(e) => {
+                        e.currentTarget.src = beforeExample;
+                      }}
+                    />
+                  </div>
+                  <div className="text-center animate-slide-in-right">
+                    <h3 className="text-3xl font-bold mb-6 text-brand-accent">APRÈS</h3>
+                    <img 
+                      src={images.after} 
+                      alt="Photo retouchée sans mobilier" 
+                      loading="lazy"
+                      decoding="async"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="w-full rounded-xl shadow-elegant cursor-pointer border border-brand-accent/20 hover:scale-105 transition-transform duration-200"
+                      onClick={() => openViewer(images.before, images.after, "Exemple principal", "", 'after')}
+                      onError={(e) => {
+                        e.currentTarget.src = afterExample;
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="text-center animate-slide-in-right">
-                  <h3 className="text-3xl font-bold mb-6 text-brand-accent">APRÈS</h3>
-                  <img 
-                    src={images.after} 
-                    alt="Photo retouchée sans mobilier" 
-                    loading="lazy"
-                    decoding="async"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="w-full rounded-xl shadow-elegant cursor-pointer border border-brand-accent/20 hover:scale-105 transition-transform duration-200"
-                    onClick={() => openViewer(images.before, images.after, "Exemple principal", "", 'after')}
-                    onError={(e) => {
-                      e.currentTarget.src = afterExample;
-                    }}
-                  />
-                </div>
-              </div>
+              )}
               
               {pair2Enabled && (
                 <div className="grid md:grid-cols-2 gap-8">

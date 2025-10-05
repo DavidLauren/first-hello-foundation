@@ -11,7 +11,7 @@ import afterExample from "@/assets/after-example.jpg";
 import DynamicHomepageImagesManager from "@/components/DynamicHomepageImagesManager";
 
 const HomepageImagesManager = () => {
-  const { images, loading, uploading: hookUploading, uploadImage, updateImage } = useHomepageImages();
+  const { images, loading, uploading: hookUploading, uploadImage, updateImage, clearPair, pair1Enabled, pair2Enabled } = useHomepageImages();
   const [beforeUrl, setBeforeUrl] = useState('');
   const [afterUrl, setAfterUrl] = useState('');
   const [before2Url, setBefore2Url] = useState('');
@@ -94,6 +94,25 @@ const HomepageImagesManager = () => {
     setUpdating(false);
   };
 
+  const handleDeletePair = async (pairNumber: 1 | 2) => {
+    const confirmed = window.confirm(
+      `Êtes-vous sûr de vouloir supprimer la paire ${pairNumber} ? Cette action effacera les deux images (avant et après) de cette paire sur la page d'accueil.`
+    );
+    
+    if (confirmed) {
+      setUpdating(true);
+      await clearPair(pairNumber);
+      if (pairNumber === 1) {
+        setBeforeUrl('');
+        setAfterUrl('');
+      } else {
+        setBefore2Url('');
+        setAfter2Url('');
+      }
+      setUpdating(false);
+    }
+  };
+
   if (loading) {
     return (
       <Card>
@@ -119,7 +138,20 @@ const HomepageImagesManager = () => {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Première paire d'images côte à côte */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Paire 1</h3>
+            <Button
+              onClick={() => handleDeletePair(1)}
+              disabled={updating || !pair1Enabled}
+              variant="destructive"
+              size="sm"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Supprimer la paire 1
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Image AVANT */}
           <div className="space-y-4">
             <Label className="text-lg font-semibold text-destructive">Image AVANT</Label>
@@ -263,9 +295,23 @@ const HomepageImagesManager = () => {
               />
             </div>
           </div>
+          </div>
         </div>
 
-            {/* Deuxième paire d'images côte à côte */}
+        {/* Deuxième paire d'images côte à côte */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Paire 2</h3>
+            <Button
+              onClick={() => handleDeletePair(2)}
+              disabled={updating || !pair2Enabled}
+              variant="destructive"
+              size="sm"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Supprimer la paire 2
+            </Button>
+          </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Image AVANT 2 */}
               <div className="space-y-4">
@@ -297,11 +343,11 @@ const HomepageImagesManager = () => {
                   <Button onClick={() => before2FileRef.current?.click()} disabled={hookUploading || updating} variant="outline" size="sm">
                     <Upload className="h-4 w-4 mr-2" /> Upload nouveau fichier
                   </Button>
-                  <input ref={before2FileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, 'before2'); }} />
-                </div>
+              <input ref={before2FileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, 'before2'); }} />
               </div>
+            </div>
 
-              {/* Image APRÈS 2 */}
+            {/* Image APRÈS 2 */}
               <div className="space-y-4">
                 <Label className="text-lg font-semibold text-brand-accent">Image APRÈS 2</Label>
                 <div className="flex items-center justify-center border-2 border-dashed border-border rounded-lg p-4">
@@ -331,79 +377,9 @@ const HomepageImagesManager = () => {
                   <Button onClick={() => after2FileRef.current?.click()} disabled={hookUploading || updating} variant="outline" size="sm">
                     <Upload className="h-4 w-4 mr-2" /> Upload nouveau fichier
                   </Button>
-                  <input ref={after2FileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, 'after2'); }} />
-              </div>
-            </div>
-          </div>
-
-        {/* Deuxième paire d'images côte à côte */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Image AVANT 2 */}
-          <div className="space-y-4">
-            <Label className="text-lg font-semibold text-destructive">Image AVANT 2</Label>
-            <div className="flex items-center justify-center border-2 border-dashed border-border rounded-lg p-4">
-              {images.before2 ? (
-                <img
-                  src={images.before2}
-                  alt="Image avant 2 actuelle"
-                  className="max-h-48 rounded-lg shadow-lg"
-                  onError={(e) => {
-                    console.error('Erreur chargement image avant 2:', images.before2);
-                    e.currentTarget.src = beforeExample;
-                  }}
-                />
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">Aucune image définie</div>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="before2-url">URL de l'image avant 2</Label>
-              <div className="flex gap-2">
-                <Input id="before2-url" value={before2Url} onChange={(e) => setBefore2Url(e.target.value)} placeholder="https://exemple.com/avant2.jpg" />
-                <Button onClick={() => handleSaveUrl('before2')} disabled={updating} size="sm"><Save className="h-4 w-4" /></Button>
-                <Button onClick={() => resetToDefault('before2')} disabled={updating} variant="outline" size="sm"><RotateCcw className="h-4 w-4" /></Button>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button onClick={() => before2FileRef.current?.click()} disabled={hookUploading || updating} variant="outline" size="sm">
-                <Upload className="h-4 w-4 mr-2" /> Upload nouveau fichier
-              </Button>
-              <input ref={before2FileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, 'before2'); }} />
-            </div>
-          </div>
-
-          {/* Image APRÈS 2 */}
-          <div className="space-y-4">
-            <Label className="text-lg font-semibold text-brand-accent">Image APRÈS 2</Label>
-            <div className="flex items-center justify-center border-2 border-dashed border-border rounded-lg p-4">
-              {images.after2 ? (
-                <img
-                  src={images.after2}
-                  alt="Image après 2 actuelle"
-                  className="max-h-48 rounded-lg shadow-lg"
-                  onError={(e) => {
-                    console.error('Erreur chargement image après 2:', images.after2);
-                    e.currentTarget.src = afterExample;
-                  }}
-                />
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">Aucune image définie</div>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="after2-url">URL de l'image après 2</Label>
-              <div className="flex gap-2">
-                <Input id="after2-url" value={after2Url} onChange={(e) => setAfter2Url(e.target.value)} placeholder="https://exemple.com/apres2.jpg" />
-                <Button onClick={() => handleSaveUrl('after2')} disabled={updating} size="sm"><Save className="h-4 w-4" /></Button>
-                <Button onClick={() => resetToDefault('after2')} disabled={updating} variant="outline" size="sm"><RotateCcw className="h-4 w-4" /></Button>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button onClick={() => after2FileRef.current?.click()} disabled={hookUploading || updating} variant="outline" size="sm">
-                <Upload className="h-4 w-4 mr-2" /> Upload nouveau fichier
-              </Button>
               <input ref={after2FileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file, 'after2'); }} />
             </div>
+          </div>
           </div>
         </div>
 
