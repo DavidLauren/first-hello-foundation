@@ -13,6 +13,7 @@ import ReferralSection from "@/components/ReferralSection";
 import UserOrdersViewer from "@/components/UserOrdersViewer";
 import UserInvoicesViewer from "@/components/UserInvoicesViewer";
 import ProfileEditor from "@/components/ProfileEditor";
+import { UserChargesViewer } from "@/components/UserChargesViewer";
 
 const AccountPage = () => {
   const { user, profile } = useAuth();
@@ -42,9 +43,10 @@ const AccountPage = () => {
           </div>
 
           <Tabs defaultValue="orders" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="orders">Mes Commandes</TabsTrigger>
               <TabsTrigger value="invoices">Mes Factures</TabsTrigger>
+              <TabsTrigger value="charges">Sommes à régler</TabsTrigger>
               <TabsTrigger value="upload">Nouvelle Commande</TabsTrigger>
               <TabsTrigger value="profile">Mon Profil</TabsTrigger>
             </TabsList>
@@ -55,6 +57,10 @@ const AccountPage = () => {
 
             <TabsContent value="invoices" className="space-y-6">
               <UserInvoicesViewer />
+            </TabsContent>
+
+            <TabsContent value="charges" className="space-y-6">
+              <UserChargesViewer />
             </TabsContent>
 
             <TabsContent value="upload" className="space-y-6">

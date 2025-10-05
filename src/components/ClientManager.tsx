@@ -8,10 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Crown, Star, Mail, Building2, Calendar, Users, UserCheck, Search, Trash2, StickyNote } from 'lucide-react';
+import { Crown, Star, Mail, Building2, Calendar, Users, UserCheck, Search, Trash2, StickyNote, Euro } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { AdminChargeDialog } from '@/components/AdminChargeDialog';
+import { useAdminCharges } from '@/hooks/useAdminCharges';
 
 interface Profile {
   id: string;
@@ -38,8 +40,10 @@ const ClientManager = () => {
   });
   const [notesProfile, setNotesProfile] = useState<Profile | null>(null);
   const [notes, setNotes] = useState('');
+  const [chargeDialogProfile, setChargeDialogProfile] = useState<Profile | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { createCharge } = useAdminCharges();
 
   useEffect(() => {
     fetchProfiles();
@@ -424,6 +428,15 @@ const ClientManager = () => {
                         </DialogContent>
                       </Dialog>
                       
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setChargeDialogProfile(profile)}
+                        title="Créer une charge"
+                      >
+                        <Euro className="h-4 w-4" />
+                      </Button>
+                      
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
@@ -468,6 +481,20 @@ const ClientManager = () => {
           )}
         </CardContent>
       </Card>
+
+      <AdminChargeDialog
+        open={!!chargeDialogProfile}
+        onOpenChange={(open) => !open && setChargeDialogProfile(null)}
+        onSubmit={(amount, description) => {
+          if (chargeDialogProfile) {
+            createCharge({
+              userId: chargeDialogProfile.id,
+              amount,
+              description,
+            });
+          }
+        }}
+      />
     </div>
   );
 };
