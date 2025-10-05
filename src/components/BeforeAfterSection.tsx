@@ -13,7 +13,7 @@ import afterExample from "@/assets/after-example.jpg";
 const BeforeAfterSection = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { images, loading } = useHomepageImages();
+  const { images, loading, pair1Enabled, pair2Enabled } = useHomepageImages();
   const { imagePairs, loading: loadingPairs } = useHomepageImagePairs();
   
   const [viewerOpen, setViewerOpen] = useState(false);
@@ -94,38 +94,40 @@ const BeforeAfterSection = () => {
                 </div>
               </div>
               
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold mb-4 text-destructive">AVANT</h3>
-                  <img 
-                    src={images.before2} 
-                    alt="Photo originale avec objets à supprimer" 
-                    loading="lazy"
-                    decoding="async"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="w-full rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform duration-200"
-                    onClick={() => openViewer(images.before2, images.after2, "Exemple secondaire", "", 'before')}
-                    onError={(e) => {
-                      e.currentTarget.src = beforeExample;
-                    }}
-                  />
+              {pair2Enabled && (
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold mb-4 text-destructive">AVANT</h3>
+                    <img 
+                      src={images.before2} 
+                      alt="Photo originale avec objets à supprimer" 
+                      loading="lazy"
+                      decoding="async"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="w-full rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform duration-200"
+                      onClick={() => openViewer(images.before2, images.after2, "Exemple secondaire", "", 'before')}
+                      onError={(e) => {
+                        e.currentTarget.src = beforeExample;
+                      }}
+                    />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold mb-4 text-brand-accent">APRÈS</h3>
+                    <img 
+                      src={images.after2} 
+                      alt="Photo retouchée avec objets supprimés" 
+                      loading="lazy"
+                      decoding="async"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="w-full rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform duration-200"
+                      onClick={() => openViewer(images.before2, images.after2, "Exemple secondaire", "", 'after')}
+                      onError={(e) => {
+                        e.currentTarget.src = afterExample;
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold mb-4 text-brand-accent">APRÈS</h3>
-                  <img 
-                    src={images.after2} 
-                    alt="Photo retouchée avec objets supprimés" 
-                    loading="lazy"
-                    decoding="async"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="w-full rounded-lg shadow-lg cursor-pointer hover:scale-105 transition-transform duration-200"
-                    onClick={() => openViewer(images.before2, images.after2, "Exemple secondaire", "", 'after')}
-                    onError={(e) => {
-                      e.currentTarget.src = afterExample;
-                    }}
-                  />
-                </div>
-              </div>
+              )}
               
               {/* Images dynamiques ajoutées depuis l'admin */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

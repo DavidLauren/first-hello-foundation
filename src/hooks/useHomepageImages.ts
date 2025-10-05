@@ -18,6 +18,8 @@ export const useHomepageImages = () => {
     before2: beforeExample,
     after2: afterExample
   });
+  const [pair1Enabled, setPair1Enabled] = useState(true);
+  const [pair2Enabled, setPair2Enabled] = useState(true);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
@@ -41,7 +43,11 @@ export const useHomepageImages = () => {
         return acc;
       }, {} as Record<string, string>) || {};
 
-      console.info('Homepage images settings', settings);
+      const p1Enabled = Boolean((settings.homepage_before_image || '').trim() && (settings.homepage_after_image || '').trim());
+      const p2Enabled = Boolean((settings.homepage_before_image2 || '').trim() && (settings.homepage_after_image2 || '').trim());
+      setPair1Enabled(p1Enabled);
+      setPair2Enabled(p2Enabled);
+
       setImages({
         before: settings.homepage_before_image || beforeExample,
         after: settings.homepage_after_image || afterExample,
@@ -135,12 +141,50 @@ export const useHomepageImages = () => {
     }
   };
 
+  const clearPair = async (pair: 1 | 2) => {
+    try {
+      const beforeKey = pair === 1 ? 'homepage_before_image' : 'homepage_before_image2';
+      const afterKey = pair === 1 ? 'homepage_after_image' : 'homepage_after_image2';
+      const updated_at = new Date().toISOString();
+
+      const [{ error: e1 }, { error: e2 }] = await Promise.all([
+        supabase.from('app_settings').update({ setting_value: '', updated_at }).eq('setting_key', beforeKey),
+        supabase.from('app_settings').update({ setting_value: '', updated_at }).eq('setting_key', afterKey),
+      ]);
+
+      if (e1 || e2) {
+        throw (e1 || e2);
+      }
+
+      setImages(prev => ({
+        ...prev,
+        ...(pair === 1 ? { before: '', after: '' } : { before2: '', after2: '' }),
+      }));
+      if (pair === 1) setPair1Enabled(false); else setPair2Enabled(false);
+
+      toast({
+        title: "Paire supprimée",
+        description: `La paire ${pair} a été supprimée.`,
+      });
+    } catch (error) {
+      console.error('Clear pair error:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer la paire",
+        variant: "destructive",
+      });
+    }
+  };
+
   return {
     images,
     loading,
     uploading,
+    pair1Enabled,
+    pair2Enabled,
     uploadImage,
     updateImage,
+    clearPair,
     refetch: fetchImages
   };
 };
