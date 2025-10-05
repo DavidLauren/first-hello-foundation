@@ -22,16 +22,25 @@ export const UserChargesViewer = () => {
         body: { chargeId },
       });
 
-      if (error) throw error;
+      console.log('Edge function response:', { data, error });
 
-      if (data?.url) {
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
+
+      if (data && data.url) {
+        console.log('Redirecting to:', data.url);
         window.location.href = data.url;
+      } else {
+        console.error('No URL in response:', data);
+        throw new Error('Aucune URL de paiement reçue');
       }
     } catch (error) {
       console.error('Error processing payment:', error);
       toast({
         title: 'Erreur',
-        description: 'Impossible de traiter le paiement.',
+        description: error instanceof Error ? error.message : 'Impossible de traiter le paiement.',
         variant: 'destructive',
       });
       setPayingChargeId(null);
