@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useHomepageImages } from "@/hooks/useHomepageImages";
 import { useState, useRef, useEffect } from "react";
-import { Upload, Save, RotateCcw } from "lucide-react";
+import { Upload, Save, RotateCcw, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import beforeExample from "@/assets/before-example.jpg";
 import afterExample from "@/assets/after-example.jpg";
