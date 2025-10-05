@@ -39,9 +39,11 @@ const OrderManager = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const documentInputRef = useRef<HTMLInputElement>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [uploading, setUploading] = useState(false);
   const [stagingFiles, setStagingFiles] = useState<File[]>([]);
+  const [stagingDocuments, setStagingDocuments] = useState<File[]>([]);
   const [delivering, setDelivering] = useState(false);
 
   // Récupérer toutes les commandes
@@ -154,36 +156,89 @@ const OrderManager = () => {
     }
   };
 
+  const handleDocumentSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    
+    const validFiles = Array.from(files);
+    setStagingDocuments(prev => [...prev, ...validFiles]);
+    
+    toast({
+      title: "Documents ajoutés",
+      description: `${validFiles.length} document(s) ajouté(s)`,
+    });
+    
+    // Reset input
+    if (documentInputRef.current) {
+      documentInputRef.current.value = '';
+    }
+  };
+
   const removeStagingFile = (index: number) => {
     setStagingFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeStagingDocument = (index: number) => {
+    setStagingDocuments(prev => prev.filter((_, i) => i !== index));
   };
 
   const clearStagingFiles = () => {
     setStagingFiles([]);
   };
 
+  const clearStagingDocuments = () => {
+    setStagingDocuments([]);
+  };
+
   const handleDeliverPackage = async (orderId: string) => {
-    if (stagingFiles.length === 0) {
+    if (stagingFiles.length === 0 && stagingDocuments.length === 0) {
       toast({
-        title: "Aucune photo",
-        description: "Ajoutez des photos avant d'envoyer le package",
+        title: "Aucun fichier",
+        description: "Ajoutez des photos ou documents avant d'envoyer le package",
         variant: "destructive",
       });
       return;
     }
 
-    console.log("📦 Delivering package of", stagingFiles.length, "files for order", orderId);
+    console.log("📦 Delivering package of", stagingFiles.length, "photos and", stagingDocuments.length, "documents for order", orderId);
     setDelivering(true);
     
     try {
       const uploadedFiles = [];
       
+      // Upload photos
       for (const file of stagingFiles) {
-        // Créer le chemin du fichier
         const fileExt = file.name.split('.').pop();
         const fileName = `${orderId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-        // Upload vers Supabase Storage
+        const { data, error } = await supabase.storage
+          .from('final-photos')
+          .upload(fileName, file);
+
+        if (error) {
+          console.error('Upload error:', error);
+          toast({
+            title: "Erreur d'upload",
+            description: `Impossible d'uploader ${file.name}`,
+            variant: "destructive",
+          });
+          continue;
+        }
+
+        uploadedFiles.push({
+          order_id: orderId,
+          file_name: file.name,
+          file_path: fileName,
+          file_size: file.size,
+          file_type: fileExt || 'unknown'
+        });
+      }
+
+      // Upload documents
+      for (const file of stagingDocuments) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${orderId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+
         const { data, error } = await supabase.storage
           .from('final-photos')
           .upload(fileName, file);
@@ -217,7 +272,7 @@ const OrderManager = () => {
           throw new Error("Impossible d'enregistrer les fichiers en base");
         }
 
-        // Envoyer l'email de notification au client avec toutes les photos
+        // Envoyer l'email de notification au client
         const order = orders?.find(o => o.id === orderId);
         if (order && order.profiles) {
           try {
@@ -237,11 +292,12 @@ const OrderManager = () => {
 
         toast({
           title: "Package livré !",
-          description: `${uploadedFiles.length} photo(s) livrée(s) avec succès. Le client a été notifié par email.`,
+          description: `${uploadedFiles.length} fichier(s) livré(s) avec succès. Le client a été notifié par email.`,
         });
 
         // Clear staging et refresh des données
         setStagingFiles([]);
+        setStagingDocuments([]);
         queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
         setSelectedOrder(null);
       }
@@ -421,19 +477,34 @@ const OrderManager = () => {
                       
                       {/* BOUTON AJOUTER PHOTOS */}
                       {!order.delivered_at && (
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            console.log("🚀 Add photos button clicked for order:", order.order_number);
-                            setSelectedOrder(order);
-                            fileInputRef.current?.click();
-                          }}
-                          disabled={uploading}
-                          className="bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                          <Upload className="h-4 w-4 mr-1" />
-                          📸 Ajouter photos
-                        </Button>
+                        <>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              console.log("🚀 Add photos button clicked for order:", order.order_number);
+                              setSelectedOrder(order);
+                              fileInputRef.current?.click();
+                            }}
+                            disabled={uploading}
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                          >
+                            <Upload className="h-4 w-4 mr-1" />
+                            📸 Photos
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              console.log("📄 Add documents button clicked for order:", order.order_number);
+                              setSelectedOrder(order);
+                              documentInputRef.current?.click();
+                            }}
+                            disabled={uploading}
+                            className="bg-purple-600 hover:bg-purple-700 text-white"
+                          >
+                            <Upload className="h-4 w-4 mr-1" />
+                            📄 Documents
+                          </Button>
+                        </>
                       )}
                       
                       {/* BOUTON SUPPRIMER */}
@@ -553,6 +624,54 @@ const OrderManager = () => {
                         </div>
                       )}
 
+                      {/* Section Documents en Staging */}
+                      {stagingDocuments.length > 0 && (
+                        <div className="border-t pt-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-medium text-sm flex items-center gap-2">
+                              📄 Documents à envoyer ({stagingDocuments.length})
+                            </h4>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={clearStagingDocuments}
+                                disabled={delivering}
+                              >
+                                Vider
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => handleDeliverPackage(order.id)}
+                                disabled={delivering}
+                                className="bg-green-600 hover:bg-green-700 text-white"
+                              >
+                                {delivering ? 'Envoi...' : '📧 Envoyer Package'}
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            {stagingDocuments.map((file, index) => (
+                              <div key={index} className="flex items-center gap-3 p-3 bg-purple-50 rounded border border-purple-200">
+                                <FileImage className="h-8 w-8 text-purple-600" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium truncate">{file.name}</p>
+                                  <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
+                                </div>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => removeStagingDocument(index)}
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       {order.delivered_files && order.delivered_files.length > 0 && (
                         <div>
                           <h4 className="font-medium text-sm mb-2 flex items-center gap-2">
@@ -621,6 +740,15 @@ const OrderManager = () => {
         multiple
         accept="image/*"
         onChange={handleFileSelection}
+        className="hidden"
+      />
+      
+      {/* Input document caché */}
+      <input
+        ref={documentInputRef}
+        type="file"
+        multiple
+        onChange={handleDocumentSelection}
         className="hidden"
       />
     </div>
