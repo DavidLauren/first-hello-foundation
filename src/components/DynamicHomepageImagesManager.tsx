@@ -355,11 +355,12 @@ const SortableImagePairCard = ({ pair, onEdit, onDelete }: SortableImagePairCard
                 )}
               </div>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" onClick={onEdit}>
+                <Button size="sm" variant="outline" onClick={onEdit} aria-label="Modifier la paire">
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="outline" onClick={onDelete}>
-                  <Trash2 className="h-4 w-4" />
+                <Button size="sm" variant="destructive" onClick={onDelete} aria-label="Supprimer la paire">
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Supprimer
                 </Button>
               </div>
             </div>
