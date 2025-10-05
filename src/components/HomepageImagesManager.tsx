@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useHomepageImages } from "@/hooks/useHomepageImages";
 import { useState, useRef, useEffect } from "react";
-import { Upload, Save, RotateCcw, Trash2 } from "lucide-react";
+import { Upload, Save, RotateCcw, Trash2, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import beforeExample from "@/assets/before-example.jpg";
 import afterExample from "@/assets/after-example.jpg";
@@ -131,10 +131,31 @@ const HomepageImagesManager = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Images fixes historiques</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Gérez toutes les images "avant" et "après" de la page d'accueil
-        </p>
+        <div className="flex justify-between items-start">
+          <div>
+            <CardTitle>Images fixes historiques</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Gérez toutes les images "avant" et "après" de la page d'accueil
+            </p>
+          </div>
+          <Button 
+            onClick={() => {
+              const dynamicSection = document.querySelector('#dynamic-images-section');
+              if (dynamicSection) {
+                dynamicSection.scrollIntoView({ behavior: 'smooth' });
+                // Déclencher le clic sur le bouton d'ajout après le scroll
+                setTimeout(() => {
+                  const addButton = document.querySelector('#add-dynamic-pair-button') as HTMLButtonElement;
+                  if (addButton) addButton.click();
+                }, 300);
+              }
+            }}
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Ajouter une paire
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Première paire d'images côte à côte */}
@@ -384,7 +405,7 @@ const HomepageImagesManager = () => {
         </div>
 
         {/* Intégration des images dynamiques dans le même format */}
-        <div className="border-t pt-6">
+        <div id="dynamic-images-section" className="border-t pt-6">
           <DynamicHomepageImagesManager />
         </div>
         

@@ -143,6 +143,7 @@ const DynamicHomepageImagesManager = () => {
         <CardContent>
           <div className="mb-6">
             <Button 
+              id="add-dynamic-pair-button"
               onClick={() => setIsCreating(true)}
               disabled={isCreating || editingId !== null}
               className="flex items-center gap-2"
