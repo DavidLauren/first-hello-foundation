@@ -31,7 +31,23 @@ export const UserChargesViewer = () => {
 
       if (data && data.url) {
         console.log('Redirecting to:', data.url);
-        window.location.href = data.url;
+        const opened = window.open(data.url, '_blank', 'noopener,noreferrer');
+        if (!opened) {
+          try {
+            if (window.top) {
+              (window.top as Window).location.href = data.url;
+            } else {
+              window.location.href = data.url;
+            }
+          } catch (e) {
+            console.warn('Top-level redirect blocked:', e);
+            toast({
+              title: 'Ouverture du paiement',
+              description: `Si rien ne s'ouvre, copiez ce lien: ${data.url}`,
+            });
+          }
+        }
+        return;
       } else {
         console.error('No URL in response:', data);
         throw new Error('Aucune URL de paiement reçue');
