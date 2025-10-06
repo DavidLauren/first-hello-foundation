@@ -140,8 +140,10 @@ export type Database = {
           author_id: string
           content: string
           created_at: string
+          display_order: number
           excerpt: string | null
           id: string
+          image_url: string | null
           published: boolean
           title: string
           updated_at: string
@@ -150,8 +152,10 @@ export type Database = {
           author_id: string
           content: string
           created_at?: string
+          display_order?: number
           excerpt?: string | null
           id?: string
+          image_url?: string | null
           published?: boolean
           title: string
           updated_at?: string
@@ -160,8 +164,10 @@ export type Database = {
           author_id?: string
           content?: string
           created_at?: string
+          display_order?: number
           excerpt?: string | null
           id?: string
+          image_url?: string | null
           published?: boolean
           title?: string
           updated_at?: string

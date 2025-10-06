@@ -8,6 +8,7 @@ interface BlogPost {
   title: string;
   content: string;
   excerpt: string | null;
+  image_url: string | null;
   created_at: string;
 }
 
@@ -19,6 +20,7 @@ const Blog = () => {
         .from("blog_posts")
         .select("*")
         .eq("published", true)
+        .order("display_order", { ascending: true })
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -42,6 +44,15 @@ const Blog = () => {
             <div className="space-y-8">
               {posts.map((post) => (
                 <Card key={post.id} className="hover:shadow-elegant transition-all duration-300">
+                  {post.image_url && (
+                    <div className="w-full h-64 overflow-hidden rounded-t-lg">
+                      <img
+                        src={post.image_url}
+                        alt={post.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
                   <CardHeader>
                     <CardTitle className="text-2xl">{post.title}</CardTitle>
                     <p className="text-sm text-muted-foreground">
