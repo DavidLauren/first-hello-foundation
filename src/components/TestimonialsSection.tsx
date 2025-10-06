@@ -45,7 +45,7 @@ const TestimonialsSection = () => {
               <CardContent className="p-6">
                 <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-primary text-primary" />
+                    <Star key={i} className="w-5 h-5 fill-yellow-500 text-yellow-500" />
                   ))}
                 </div>
                 <p className="text-foreground mb-6 italic">
@@ -62,7 +62,7 @@ const TestimonialsSection = () => {
 
         <div className="mt-16 text-center">
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 rounded-full">
-            <Star className="w-5 h-5 fill-primary text-primary" />
+            <Star className="w-5 h-5 fill-yellow-500 text-yellow-500" />
             <span className="font-semibold text-lg">4.9/5</span>
             <span className="text-muted-foreground">sur 500+ avis</span>
           </div>
