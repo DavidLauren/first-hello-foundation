@@ -27,7 +27,7 @@ const TestimonialsSection = () => {
     <section className="py-12 px-4 bg-gradient-to-b from-background to-muted/20">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gradient">
             Clients Satisfaits
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
