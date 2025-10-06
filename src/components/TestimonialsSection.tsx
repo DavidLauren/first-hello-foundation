@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { Star, StarHalf } from "lucide-react";
 
 const TestimonialsSection = () => {
   const testimonials = [
@@ -19,7 +19,7 @@ const TestimonialsSection = () => {
       name: "Sophie Laurent",
       role: "Créatrice de contenu",
       comment: "Un gain de temps considérable ! Je recommande vivement ce service à tous les créateurs de contenu.",
-      rating: 5,
+      rating: 4.5,
     },
   ];
 
@@ -44,9 +44,12 @@ const TestimonialsSection = () => {
             >
               <CardContent className="p-6">
                 <div className="flex gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
+                  {[...Array(Math.floor(testimonial.rating))].map((_, i) => (
                     <Star key={i} className="w-5 h-5 fill-yellow-500 text-yellow-500" />
                   ))}
+                  {testimonial.rating % 1 !== 0 && (
+                    <StarHalf className="w-5 h-5 fill-yellow-500 text-yellow-500" />
+                  )}
                 </div>
                 <p className="text-foreground mb-6 italic">
                   "{testimonial.comment}"
