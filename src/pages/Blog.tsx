@@ -44,15 +44,15 @@ const Blog = () => {
             <div className="space-y-8">
               {posts.map((post) => (
                 <Card key={post.id} className="hover:shadow-elegant transition-all duration-300">
-                  {post.image_url && (
-                    <div className="w-full h-64 overflow-hidden rounded-t-lg">
-                      <img
-                        src={post.image_url}
-                        alt={post.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
+                {post.image_url && (
+                  <div className="w-full rounded-t-lg">
+                    <img
+                      src={post.image_url}
+                      alt={post.title}
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                )}
                   <CardHeader>
                     <CardTitle className="text-2xl">{post.title}</CardTitle>
                     <p className="text-sm text-muted-foreground">
