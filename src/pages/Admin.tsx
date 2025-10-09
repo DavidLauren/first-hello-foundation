@@ -34,7 +34,7 @@ const AdminPage = () => {
   const { examples, loading: examplesLoading, saveExample, deleteExample, reorderExamples } = useExamples();
   const [editingExample, setEditingExample] = useState<Example | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [activeTab, setActiveTab] = useState<'orders' | 'examples' | 'media' | 'options' | 'clients' | 'billing' | 'info-entreprise' | 'trash' | 'blog'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'examples' | 'media' | 'options' | 'clients' | 'billing' | 'info-entreprise' | 'trash'>('orders');
   const [billingSubTab, setBillingSubTab] = useState<'overview' | 'invoices' | 'info'>('overview');
 
   useEffect(() => {
@@ -206,17 +206,6 @@ const AdminPage = () => {
                 <Archive className="h-4 w-4" />
                 Corbeille
               </button>
-              <button
-                className={`px-4 py-2 font-medium transition-colors flex items-center gap-2 ${
-                  activeTab === 'blog' 
-                    ? 'text-brand-primary border-b-2 border-brand-primary' 
-                    : 'text-gray-600 hover:text-brand-primary'
-                }`}
-                onClick={() => setActiveTab('blog')}
-              >
-                <List className="h-4 w-4" />
-                Blog
-              </button>
             </div>
           </div>
 
@@ -252,8 +241,6 @@ const AdminPage = () => {
             <CompanyInfoManager />
           ) : activeTab === 'trash' ? (
             <TrashManager />
-          ) : activeTab === 'blog' ? (
-            <BlogManager />
           ) : (
             <div className="space-y-8">
               <AdminDeferredBillingSummary />
