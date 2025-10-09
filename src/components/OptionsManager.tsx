@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Gift, Euro, Users, CreditCard, Download, Home } from "lucide-react";
+import { Gift, Euro, Users, CreditCard, Download, Home, FileText } from "lucide-react";
 import PromoCodeManager from './PromoCodeManager';
 import PriceManager from './PriceManager';
 import ReferralManager from './ReferralManager';
 import StripeManager from './StripeManager';
 import EmailExportManager from './EmailExportManager';
 import HomepageImagesManager from './HomepageImagesManager';
+import BlogManager from './BlogManager';
 
 const OptionsManager = () => {
-  const [activeSubTab, setActiveSubTab] = useState<'promo' | 'pricing' | 'referral' | 'stripe' | 'export' | 'homepage'>('promo');
+  const [activeSubTab, setActiveSubTab] = useState<'promo' | 'pricing' | 'referral' | 'stripe' | 'export' | 'homepage' | 'blog'>('promo');
 
   return (
     <div className="space-y-6">
@@ -81,6 +82,15 @@ const OptionsManager = () => {
                 <Home className="h-4 w-4" />
                 Page d'accueil
               </Button>
+              <Button
+                variant={activeSubTab === 'blog' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setActiveSubTab('blog')}
+                className="flex items-center gap-2"
+              >
+                <FileText className="h-4 w-4" />
+                Blog
+              </Button>
             </div>
           </div>
 
@@ -91,6 +101,7 @@ const OptionsManager = () => {
           {activeSubTab === 'stripe' && <StripeManager />}
           {activeSubTab === 'export' && <EmailExportManager />}
           {activeSubTab === 'homepage' && <HomepageImagesManager />}
+          {activeSubTab === 'blog' && <BlogManager />}
         </CardContent>
       </Card>
     </div>
