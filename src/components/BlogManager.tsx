@@ -33,6 +33,8 @@ interface BlogPost {
   content: string;
   excerpt: string | null;
   image_url: string | null;
+  before_image_url: string | null;
+  after_image_url: string | null;
   published: boolean;
   display_order: number;
   created_at: string;
@@ -49,6 +51,8 @@ const BlogManager = () => {
     excerpt: "",
     content: "",
     image_url: "",
+    before_image_url: "",
+    after_image_url: "",
     published: false,
   });
   const [uploading, setUploading] = useState(false);
@@ -136,7 +140,15 @@ const BlogManager = () => {
   });
 
   const resetForm = () => {
-    setFormData({ title: "", excerpt: "", content: "", image_url: "", published: false });
+    setFormData({ 
+      title: "", 
+      excerpt: "", 
+      content: "", 
+      image_url: "", 
+      before_image_url: "",
+      after_image_url: "",
+      published: false 
+    });
     setIsEditing(false);
     setEditingPost(null);
   };
@@ -148,6 +160,8 @@ const BlogManager = () => {
       excerpt: post.excerpt || "",
       content: post.content,
       image_url: post.image_url || "",
+      before_image_url: post.before_image_url || "",
+      after_image_url: post.after_image_url || "",
       published: post.published,
     });
     setIsEditing(true);
@@ -162,7 +176,10 @@ const BlogManager = () => {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: 'image_url' | 'before_image_url' | 'after_image_url'
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -182,7 +199,7 @@ const BlogManager = () => {
         .from("admin-media")
         .getPublicUrl(filePath);
 
-      setFormData({ ...formData, image_url: publicUrl });
+      setFormData({ ...formData, [field]: publicUrl });
       toast({ title: "Image uploadée avec succès" });
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -270,33 +287,117 @@ const BlogManager = () => {
             </div>
 
             <div>
-              <Label htmlFor="image">Image (optionnel)</Label>
-              <div className="space-y-2">
-                <Input
-                  id="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={uploading}
-                />
-                {formData.image_url && (
-                  <div className="relative w-32 h-32">
-                    <img
-                      src={formData.image_url}
-                      alt="Preview"
-                      className="w-full h-full object-cover rounded border"
+              <Label>Images</Label>
+              <div className="space-y-4 mt-2">
+                {/* Image principale */}
+                <div>
+                  <Label htmlFor="image" className="text-sm text-muted-foreground">Image principale (optionnel)</Label>
+                  <div className="space-y-2 mt-1">
+                    <Input
+                      id="image"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, 'image_url')}
+                      disabled={uploading}
                     />
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="destructive"
-                      className="absolute -top-2 -right-2"
-                      onClick={() => setFormData({ ...formData, image_url: "" })}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
+                    {formData.image_url && (
+                      <div className="relative w-32 h-32">
+                        <img
+                          src={formData.image_url}
+                          alt="Preview"
+                          className="w-full h-full object-cover rounded border"
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="destructive"
+                          className="absolute -top-2 -right-2"
+                          onClick={() => setFormData({ ...formData, image_url: "" })}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
+
+                {/* Images avant/après */}
+                <div className="border-t pt-4">
+                  <Label className="text-sm font-medium">Exemple Avant/Après (optionnel)</Label>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Ajoutez deux images pour créer une comparaison avant/après
+                  </p>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Image avant */}
+                    <div>
+                      <Label htmlFor="before-image" className="text-sm text-muted-foreground">
+                        Image "Avant"
+                      </Label>
+                      <div className="space-y-2 mt-1">
+                        <Input
+                          id="before-image"
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(e, 'before_image_url')}
+                          disabled={uploading}
+                        />
+                        {formData.before_image_url && (
+                          <div className="relative w-full aspect-square">
+                            <img
+                              src={formData.before_image_url}
+                              alt="Avant"
+                              className="w-full h-full object-cover rounded border"
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="destructive"
+                              className="absolute -top-2 -right-2"
+                              onClick={() => setFormData({ ...formData, before_image_url: "" })}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Image après */}
+                    <div>
+                      <Label htmlFor="after-image" className="text-sm text-muted-foreground">
+                        Image "Après"
+                      </Label>
+                      <div className="space-y-2 mt-1">
+                        <Input
+                          id="after-image"
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(e, 'after_image_url')}
+                          disabled={uploading}
+                        />
+                        {formData.after_image_url && (
+                          <div className="relative w-full aspect-square">
+                            <img
+                              src={formData.after_image_url}
+                              alt="Après"
+                              className="w-full h-full object-cover rounded border"
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="destructive"
+                              className="absolute -top-2 -right-2"
+                              onClick={() => setFormData({ ...formData, after_image_url: "" })}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

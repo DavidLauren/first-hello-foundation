@@ -9,6 +9,8 @@ interface BlogPost {
   content: string;
   excerpt: string | null;
   image_url: string | null;
+  before_image_url: string | null;
+  after_image_url: string | null;
   created_at: string;
 }
 
@@ -44,15 +46,15 @@ const Blog = () => {
             <div className="space-y-8">
               {posts.map((post) => (
                 <Card key={post.id} className="hover:shadow-elegant transition-all duration-300">
-                {post.image_url && (
-                  <div className="w-full rounded-t-lg overflow-hidden">
-                    <img
-                      src={post.image_url}
-                      alt={post.title}
-                      className="w-full h-auto object-contain rounded-lg"
-                    />
-                  </div>
-                )}
+                  {post.image_url && (
+                    <div className="w-full rounded-t-lg overflow-hidden">
+                      <img
+                        src={post.image_url}
+                        alt={post.title}
+                        className="w-full h-auto object-contain rounded-lg"
+                      />
+                    </div>
+                  )}
                   <CardHeader>
                     <CardTitle className="text-2xl">{post.title}</CardTitle>
                     <p className="text-sm text-muted-foreground">
@@ -67,6 +69,36 @@ const Blog = () => {
                     {post.excerpt && (
                       <p className="text-muted-foreground mb-4">{post.excerpt}</p>
                     )}
+                    
+                    {/* Affichage avant/après si les deux images sont présentes */}
+                    {post.before_image_url && post.after_image_url && (
+                      <div className="my-6">
+                        <h3 className="text-lg font-semibold mb-3">Exemple Avant/Après</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm text-muted-foreground mb-2 font-medium">Avant</p>
+                            <div className="rounded-lg overflow-hidden border">
+                              <img
+                                src={post.before_image_url}
+                                alt="Avant"
+                                className="w-full h-auto object-contain"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground mb-2 font-medium">Après</p>
+                            <div className="rounded-lg overflow-hidden border">
+                              <img
+                                src={post.after_image_url}
+                                alt="Après"
+                                className="w-full h-auto object-contain"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="prose prose-lg max-w-none">
                       <p className="whitespace-pre-wrap">{post.content}</p>
                     </div>

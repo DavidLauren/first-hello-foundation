@@ -137,7 +137,9 @@ export type Database = {
       }
       blog_posts: {
         Row: {
+          after_image_url: string | null
           author_id: string
+          before_image_url: string | null
           content: string
           created_at: string
           display_order: number
@@ -149,7 +151,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          after_image_url?: string | null
           author_id: string
+          before_image_url?: string | null
           content: string
           created_at?: string
           display_order?: number
@@ -161,7 +165,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          after_image_url?: string | null
           author_id?: string
+          before_image_url?: string | null
           content?: string
           created_at?: string
           display_order?: number
