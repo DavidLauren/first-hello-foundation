@@ -22,7 +22,7 @@ const MentionsLegales = () => {
                 <p><strong>Numéro d'immatriculation :</strong> RCS 504 611 807</p>
                 <p><strong>Numéro de TVA intracommunautaire :</strong> FR83504611807</p>
                 <p><strong>Siège social :</strong> 58 rue du théâtre, 75015 Paris</p>
-                <p><strong>Directeur de la publication :</strong> David Laurent</p>
+                <p><strong>Directeur de la publication :</strong> David Laurent et Laurence Coste</p>
               </div>
             </section>
 
