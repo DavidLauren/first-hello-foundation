@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Edit, Plus, X, Upload, GripVertical } from "lucide-react";
+import { Trash2, Edit, Plus, X, Upload, GripVertical, Video } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -35,6 +35,7 @@ interface BlogPost {
   image_url: string | null;
   before_image_url: string | null;
   after_image_url: string | null;
+  video_url: string | null;
   published: boolean;
   display_order: number;
   created_at: string;
@@ -53,6 +54,7 @@ const BlogManager = () => {
     image_url: "",
     before_image_url: "",
     after_image_url: "",
+    video_url: "",
     published: false,
   });
   const [uploading, setUploading] = useState(false);
@@ -147,6 +149,7 @@ const BlogManager = () => {
       image_url: "", 
       before_image_url: "",
       after_image_url: "",
+      video_url: "",
       published: false 
     });
     setIsEditing(false);
@@ -162,6 +165,7 @@ const BlogManager = () => {
       image_url: post.image_url || "",
       before_image_url: post.before_image_url || "",
       after_image_url: post.after_image_url || "",
+      video_url: post.video_url || "",
       published: post.published,
     });
     setIsEditing(true);
@@ -209,6 +213,46 @@ const BlogManager = () => {
     }
   };
 
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Vérifier la taille du fichier (max 100MB)
+    if (file.size > 100 * 1024 * 1024) {
+      toast({ 
+        title: "Fichier trop volumineux", 
+        description: "La vidéo ne doit pas dépasser 100MB",
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `blog/videos/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("admin-media")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("admin-media")
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, video_url: publicUrl });
+      toast({ title: "Vidéo uploadée avec succès" });
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      toast({ title: "Erreur lors de l'upload", variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -219,10 +263,8 @@ const BlogManager = () => {
 
     const newPosts = arrayMove(posts, oldIndex, newIndex);
 
-    // Mise à jour optimiste
     queryClient.setQueryData(["blog-posts-admin"], newPosts);
 
-    // Mise à jour de l'ordre dans la base de données
     try {
       const updates = newPosts.map((post, index) => ({
         id: post.id,
@@ -401,6 +443,66 @@ const BlogManager = () => {
               </div>
             </div>
 
+            {/* Section Vidéo */}
+            <div className="border-t pt-4">
+              <Label>Vidéo (optionnel)</Label>
+              <p className="text-xs text-muted-foreground mb-3">
+                Uploadez une vidéo ou collez un lien YouTube/Vimeo
+              </p>
+              
+              <div className="space-y-3">
+                {/* Upload de vidéo */}
+                <div>
+                  <Label htmlFor="video-upload" className="text-sm text-muted-foreground">
+                    Uploader une vidéo (max 100MB)
+                  </Label>
+                  <Input
+                    id="video-upload"
+                    type="file"
+                    accept="video/*"
+                    onChange={handleVideoUpload}
+                    disabled={uploading}
+                    className="mt-1"
+                  />
+                </div>
+
+                {/* OU lien vidéo */}
+                <div>
+                  <Label htmlFor="video-url" className="text-sm text-muted-foreground">
+                    Ou coller un lien vidéo
+                  </Label>
+                  <Input
+                    id="video-url"
+                    type="url"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    value={formData.video_url}
+                    onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
+
+                {formData.video_url && (
+                  <div className="relative">
+                    <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                      <Video className="h-12 w-12 text-muted-foreground" />
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="destructive"
+                      className="absolute top-2 right-2"
+                      onClick={() => setFormData({ ...formData, video_url: "" })}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-2 truncate">
+                      {formData.video_url}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
             <div>
               <Label htmlFor="content">Contenu</Label>
               <Textarea
@@ -529,6 +631,12 @@ const SortableBlogPost = ({ post, onEdit, onDelete }: SortableBlogPostProps) => 
               >
                 {post.published ? "Publié" : "Brouillon"}
               </span>
+              {post.video_url && (
+                <span className="flex items-center gap-1">
+                  <Video className="h-3 w-3" />
+                  Vidéo
+                </span>
+              )}
             </div>
           </div>
 

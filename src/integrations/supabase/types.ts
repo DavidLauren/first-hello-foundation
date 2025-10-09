@@ -149,6 +149,7 @@ export type Database = {
           published: boolean
           title: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           after_image_url?: string | null
@@ -163,6 +164,7 @@ export type Database = {
           published?: boolean
           title: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           after_image_url?: string | null
@@ -177,6 +179,7 @@ export type Database = {
           published?: boolean
           title?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }
