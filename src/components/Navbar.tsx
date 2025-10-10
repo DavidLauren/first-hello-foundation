@@ -53,6 +53,7 @@ const Navbar = () => {
 
   const navLinks = [
     { to: "/examples", label: "Galerie", icon: Camera },
+    { to: "/products", label: "Produits", icon: User },
     { to: "/blog", label: "Blog", icon: User },
     { to: "/contact", label: "Contact", icon: User },
   ];

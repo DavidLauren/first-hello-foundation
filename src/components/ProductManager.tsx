@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Pencil, Trash2, Image as ImageIcon, Euro } from 'lucide-react';
+import { Plus, Pencil, Trash2, Image as ImageIcon, Euro, Eye, EyeOff } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -26,6 +26,7 @@ const ProductManager = () => {
   const [loading, setLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [pageEnabled, setPageEnabled] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -38,7 +39,54 @@ const ProductManager = () => {
 
   useEffect(() => {
     fetchProducts();
+    fetchPageStatus();
   }, []);
+
+  const fetchPageStatus = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('app_settings')
+        .select('setting_value')
+        .eq('setting_key', 'products_page_enabled')
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      setPageEnabled(data?.setting_value === 'true');
+    } catch (error) {
+      console.error('Error fetching page status:', error);
+    }
+  };
+
+  const togglePageStatus = async () => {
+    try {
+      const newValue = !pageEnabled;
+      
+      const { error } = await supabase
+        .from('app_settings')
+        .upsert({
+          setting_key: 'products_page_enabled',
+          setting_value: String(newValue),
+          description: 'Active ou désactive la page publique des produits'
+        });
+
+      if (error) throw error;
+      
+      setPageEnabled(newValue);
+      toast({
+        title: newValue ? "Page activée" : "Page désactivée",
+        description: newValue 
+          ? "La page produits est maintenant visible publiquement"
+          : "La page produits est maintenant masquée",
+      });
+    } catch (error) {
+      console.error('Error toggling page status:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de modifier le statut de la page",
+        variant: "destructive",
+      });
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -201,12 +249,30 @@ const ProductManager = () => {
             Gérez les produits affichés sur votre site
           </p>
         </div>
-        {!isCreating && (
-          <Button onClick={() => setIsCreating(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Nouveau Produit
+        <div className="flex gap-2">
+          <Button
+            variant={pageEnabled ? "default" : "outline"}
+            onClick={togglePageStatus}
+          >
+            {pageEnabled ? (
+              <>
+                <Eye className="h-4 w-4 mr-2" />
+                Page Active
+              </>
+            ) : (
+              <>
+                <EyeOff className="h-4 w-4 mr-2" />
+                Page Désactivée
+              </>
+            )}
           </Button>
-        )}
+          {!isCreating && (
+            <Button onClick={() => setIsCreating(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Nouveau Produit
+            </Button>
+          )}
+        </div>
       </div>
 
       {isCreating && (
